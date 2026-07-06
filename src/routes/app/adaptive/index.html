@@ -1,0 +1,68 @@
+<link rel="stylesheet" href="adaptive/styles.css">
+<script src="adaptive/script.js" type="module" defer></script>
+
+<main>
+    <nav>
+        <h2 onclick="$.url = '/app'">flowstate</h2>
+    </nav>
+    <div id="question">
+        <div id="reference" hidden>
+            <p id="passage-heading">Passage</p>
+            <p id="passage"></p>
+        </div>
+        <div id="problem">
+            <p id="problem-heading"></p>
+            <p id="stimulus"></p>
+            <p id="stem"></p>
+            <div id="choices">
+                <button id="A" class="choice">
+                    <p>
+                        <span class="letter">A</span>
+                        <span class="content"></span>
+                    </p>
+                    <p class="rationale" hidden></p>
+                </button>
+                <button id="B" class="choice">
+                    <p>
+                        <span class="letter">B</span>
+                        <span class="content"></span>
+                    </p>
+                    <p class="rationale" hidden></p>
+                </button>
+                <button id="C" class="choice">
+                    <p>
+                        <span class="letter">C</span>
+                        <span class="content"></span>
+                    </p>
+                    <p class="rationale" hidden></p>
+                </button>
+                <button id="D" class="choice">
+                    <p>
+                        <span class="letter">D</span>
+                        <span class="content"></span>
+                    </p>
+                    <p class="rationale" hidden></p>
+                </button>
+                <button id="E" class="choice">
+                    <p>
+                        <span class="letter">E</span>
+                        <span class="content"></span>
+                    </p>
+                    <p class="rationale" hidden></p>
+                </button>
+            </div>
+            <!-- <input id="question-input" placeholder="Ask a question about the problem..." /> -->
+            <button id="next">Next Question --></button>
+        </div>
+    </div>
+</main>
+<aside id="chat" hidden>
+    <p id="chat-heading"><span id="dot"></span>Tutor</p>
+    <div id="messages">
+        <!-- <p>You picked B. Before I explain — what is this argument trying to prove? Look at the passage.</p>
+        <p class="user">That restaurant sales will rise.</p>
+        <p>Look at the purple highlight — that's the conclusion. B needs to weaken that claim. What part of the passage does B actually target?</p>
+        <p class="user">The $200M cost assumption (amber)</p> -->
+    </div>
+    <input id="chat-input" placeholder="Ask a question about the problem..." />
+</aside>

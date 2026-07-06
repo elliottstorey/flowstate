@@ -1,0 +1,43 @@
+{
+  "name": "framework",
+  "version": "1.0.0",
+  "description": "A fullstack JS framework aiming to reduce boilerplate and keep code vanilla.",
+  "main": "framework.js",
+  "type": "module",
+  "scripts": {
+    "prestart": "node --env-file=.env .framework/db/push.js",
+    "start": "node --env-file=.env framework.js",
+    "dev": "node --env-file=.env framework.js"
+  },
+  "imports": {
+    "#framework/*": "./.framework/*.js",
+    "#framework/features/*": "./.framework/*/index.js",
+    "#config/*": "./src/*.js",
+    "#lib/*": "./src/lib/*/index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@ai-sdk/anthropic": "^3.0.71",
+    "@ai-sdk/deepseek": "^2.0.29",
+    "@ai-sdk/google": "^3.0.64",
+    "@ai-sdk/mistral": "^3.0.30",
+    "@ai-sdk/openai": "^3.0.53",
+    "@openrouter/ai-sdk-provider": "^2.8.0",
+    "@pgkit/migra": "^0.6.1",
+    "ai": "^6.0.168",
+    "ai-sdk-ollama": "^3.8.3",
+    "ajv": "^8.18.0",
+    "ajv-formats": "^3.0.1",
+    "arctic": "^3.7.0",
+    "cookie": "^1.1.1",
+    "jsdom": "^29.0.2",
+    "mime-types": "^3.0.2",
+    "postgres": "^3.4.9",
+    "request-ip": "^3.3.0",
+    "serialize-javascript": "^7.0.5",
+    "stripe": "^22.2.3",
+    "urlpattern-polyfill": "^10.1.0",
+    "ws": "^8.19.0"
+  }
+}

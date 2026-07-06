@@ -1,0 +1,61 @@
+<link rel="stylesheet" href="styles.css">
+
+<nav>
+    <h2>flowstate</h2>
+    <button onclick="$.url = '/app'">Get started for free</button>
+</nav>
+
+<main>
+    <div id="copy">
+        <!-- <p>Reach your target score in 10 hours or less</p>
+        <p>Askign the right questions at the right time</p>
+        <p>90% of students reach their target score</p>
+        <p>What could cost $10,000 is now $199</p> -->
+        <p class="chip">✨ A personal tutor that would cost $100 per hour. Now for $60 a month!</p>
+        <!-- <h1>Your LSAT prep, completely on autopilot.</h1> -->
+        <h1>Reach your target LSAT score in <em>10 hours</em> or less</h1>
+        <p>Stop stressing over what to study next or struggling to understand confusing answer keys. We handle the heavy lifting for you. Our engine learns exactly how you think, feeds you the perfect question at the perfect time, and personally guides you through your mistakes until everything clicks. No planning, no guesswork, no wasted effort — just the fastest, most effortless path to your target score.</p>
+        <button onclick="$.url = '/app'" class="cta">Get started for free --></button>
+        <p>sub cta text</p>
+    </div>
+    <div id="visual">
+        <div id="browser">
+            <div id="nav">
+                <span class="dot"></span>
+                <span class="dot"></span>
+                <span class="dot"></span>
+            </div>
+            <div id="window">
+                <div id="question">
+                    <p id="stimulus">All dogs bark. Max is a dog.</p>
+                    <p id="stem">What must be true?</p>
+                    <div id="choices">
+                        <button id="A" class="choice">
+                            <p>
+                                <span class="letter">A</span>
+                                <span class="content">Max barks. ✅</span>
+                            </p>
+                        </button>
+                        <button id="B" class="choice">
+                            <p>
+                                <span class="letter">B</span>
+                                <span class="content">Max is the only dog that barks.</span>
+                            </p>
+                        </button>
+                        <button id="C" class="choice">
+                            <p>
+                                <span class="letter">C</span>
+                                <span class="content">All animals bark.</span>
+                            </p>
+                        </button>
+                    </div>
+                </div>
+                <div id="chat">
+                    <p id="chat-heading"><span id="dot"></span>From your tutor</p>
+                    <div id="messages">
+                        <p>You picked B. Before I explain — what is this argument trying to prove? Look at the passage.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+</main>

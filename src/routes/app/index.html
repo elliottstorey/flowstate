@@ -1,0 +1,158 @@
+<link rel="stylesheet" href="app/styles.css">
+<script src="app/script.js" type="module" defer></script>
+
+<nav>
+    <h2>flowstate</h2>
+    <p>Welcome, Elliott</p>
+</nav>
+
+<main>
+    <div id="tutor">
+        <p id="day-period">Wednesday morning</p>
+        <h1 id="greeting">You're 11 hours away from your target score.</h1>
+        <p id="content">Your logical reasoning is getting sharp, conclusions and assumptions are genuinely strong now. The place you're still leaving points on the table is reading comprehension double passages. That's the focus today. Once you crack those 175 is very much in range!</p>
+        <div id="topics">
+            <span class="chip">Reading Comprehension</span>
+            <span class="chip">Author's Attitude</span>
+            <span class="chip">Difficulty 4</span>
+        </div>
+        <button id="start" onclick="$.url += '/adaptive'">Continue studying --></button>
+    </div>
+    <div id="stats">
+        <div class="stat">
+            <p class="title">Predicted Score</p>
+            <p class="metric"><span>152</span> --> 180</p>
+            <div id="predicted-meter" class="meter"></div>
+            <p class="context">Started at 130</p>
+        </div>
+        <div class="stat">
+            <p class="title">Progress</p>
+            <p class="metric"><span>+22</span> points</p>
+            <div id="progress-meter" class="meter"></div>
+            <p class="context">since you started</p>
+        </div>
+        <div class="stat">
+            <p class="title">Velocity</p>
+            <p class="metric"><span>+8</span> points/week</p>
+            <p class="context">up from +5 last week</p>
+        </div>
+        <div class="stat">
+            <p class="title">Distance</p>
+            <p class="metric"><span>~220</span> questions</p>
+            <p class="context">left to reach the next milestone</p>
+        </div>
+    </div>
+    <div id="tests" style="border: 2px dashed var(--ui); height: 100%; justify-content: center; align-items: center;">
+        <h3>Practice Tests (Coming Soon)</h3>
+        <!-- <p>Your practice exams have been trending upwards, which is great news. Take another one now for the most accurate score prediction.</p>
+        <div>
+            <div class="test">
+                <div class="overview">
+                    <p class="title">Practice Test 1</p>
+                    <p class="date">Oct 3</p>
+                    <p class="description">Baseline -- LR and RC both needed work</p>
+                </div>
+                <div class="details">
+                    <p class="score">130</p>
+                    <p class="delta">baseline</p>
+                </div>
+            </div>
+            <div class="test">
+                <div class="overview">
+                    <p class="title">Practice Test 2</p>
+                    <p class="date">Oct 14</p>
+                    <p class="description">LR improved significantly. RC timing still an issue</p>
+                </div>
+                <div class="details">
+                    <p class="score">155</p>
+                    <p class="delta">+25</p>
+                </div>
+            </div>
+            <div class="test">
+                <div class="overview">
+                    <p class="title">Practice Test 3</p>
+                    <p class="date">Oct 28</p>
+                    <p class="description">RC improving. Double passages still the weak point</p>
+                </div>
+                <div class="details">
+                    <p class="score">160</p>
+                    <p class="delta">+5</p>
+                </div>
+            </div>
+        </div>
+        <button id="new-exam">New practice exam</button> -->
+    </div>
+    <div id="lessons" style="border: 2px dashed var(--ui); display: flex; height: 100%; justify-content: center; align-items: center;">
+        <h3>Lessons (Coming Soon)</h3>
+        <!-- <div class="section">
+            <h4>Logical reasoning</h4>
+            <div class="topic">
+                <p>Conclusions & disputes</p>
+                <p class="chip strong">Stronger</p>
+            </div>
+            <div class="topic">
+                <p>Assumptions</p>
+                <p class="chip strong">Stronger</p>
+            </div>
+            <div class="topic">
+                <p>Deductions & inference</p>
+                <p class="chip strong">Stronger</p>
+            </div>
+            <div class="topic">
+                <p>Explain or resolve</p>
+                <p class="chip medium">Needs work</p>
+            </div>
+            <div class="topic">
+                <p>Strengthen or weaken</p>
+                <p class="chip medium">Needs work</p>
+            </div>
+            <div class="topic">
+                <p>Flaws</p>
+                <p class="chip medium">Needs work</p>
+            </div>
+            <div class="topic">
+                <p>Techniques, roles & principles</p>
+                <p class="chip">Not started</p>
+            </div>
+            <div class="topic">
+                <p>Matching structure & principles</p>
+                <p class="chip">Not started</p>
+            </div>
+            <div class="topic">
+                <p>Matching flaws</p>
+                <p class="chip weak">Weakest</p>
+            </div>
+        </div>
+        <div class="section">
+            <h4>Reading comprehension</h4>
+            <div class="topic">
+                <p>Main points & primary purposes</p>
+                <p class="chip strong">Stronger</p>
+            </div>
+            <div class="topic">
+                <p>Recognizing elements</p>
+                <p class="chip strong">Stronger</p>
+            </div>
+            <div class="topic">
+                <p>Drawing inferences</p>
+                <p class="chip medium">Needs work</p>
+            </div>
+            <div class="topic">
+                <p>Analyzing structure</p>
+                <p class="chip medium">Needs work</p>
+            </div>
+            <div class="topic">
+                <p>Author's attitude</p>
+                <p class="chip weak">Weakest</p>
+            </div>
+            <div class="topic">
+                <p>Applying to new contexts</p>
+                <p class="chip">Not started</p>
+            </div>
+            <div class="topic">
+                <p>Meaning in context</p>
+                <p class="chip">Not started</p>
+            </div>
+        </div> -->
+    </div>
+</main>
