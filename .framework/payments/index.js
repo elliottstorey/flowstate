@@ -3,6 +3,8 @@ import { text } from "node:stream/consumers";
 import Stripe from "stripe";
 import config from "#config/payments";
 
+const DUMMY_BASE = 'http://localhost';
+
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 function getPlanKeyByPriceId(priceId) {
@@ -84,7 +86,7 @@ async function client({ payments }) {
 const routes = [
 	{
 		method: "POST",
-		pattern: new URLPattern({ pathname: "/payments/subscribe" }),
+		pattern: new URLPattern({ pathname: "/payments/subscribe" }, DUMMY_BASE),
 		handler: async ({ db, user, body }) => {
 			if (!user) return { status: 401, body: { error: "Unauthorized" } };
 
@@ -118,7 +120,7 @@ const routes = [
 	},
 	{
 		method: "POST",
-		pattern: new URLPattern({ pathname: "/payments/webhook" }),
+		pattern: new URLPattern({ pathname: "/payments/webhook" }, DUMMY_BASE),
 		handler: async ({ db, request }) => {
 			const rawBody = await text(request);
 			const signature = request.headers["stripe-signature"];

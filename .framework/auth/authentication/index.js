@@ -3,6 +3,8 @@ import crypto from "node:crypto";
 import * as arctic from "arctic";
 import config from "#config/auth";
 
+const DUMMY_BASE = 'http://localhost';
+
 const google = new arctic.Google(
 	process.env.GOOGLE_CLIENT_ID,
 	process.env.GOOGLE_CLIENT_SECRET,
@@ -43,7 +45,7 @@ function client({ user }) {
 const routes = [
 	{
 		method: "GET",
-		pattern: new URLPattern({ pathname: "/auth/google" }),
+		pattern: new URLPattern({ pathname: "/auth/google" }, DUMMY_BASE),
 		handler: ({ cookies, redirect }) => {
 			const state = arctic.generateState();
 			const codeVerifier = arctic.generateCodeVerifier();
@@ -60,7 +62,7 @@ const routes = [
 	},
 	{
 		method: "GET",
-		pattern: new URLPattern({ pathname: "/auth/callback/google" }),
+		pattern: new URLPattern({ pathname: "/auth/callback/google" }, DUMMY_BASE),
 		handler: async ({ db, url, cookies, redirect, error }) => {
 			const code = url.searchParams.get("code");
 			const state = url.searchParams.get("state");
@@ -114,7 +116,7 @@ const routes = [
 	},
 	{
 		method: "DELETE",
-		pattern: new URLPattern({ pathname: "/auth/session" }),
+		pattern: new URLPattern({ pathname: "/auth/session" },DUMMY_BASE),
 		handler: async ({ db, cookies }) => {
 			const token = cookies.session;
 			if (token) {

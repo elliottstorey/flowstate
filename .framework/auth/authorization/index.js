@@ -1,14 +1,16 @@
 import "urlpattern-polyfill";
 import config from "#config/auth";
 
+const DUMMY_BASE = 'http://localhost';
+
 const compiledRules = Object.entries(config.authorize || {})
     .flatMap(([path, rule]) => {
         const norm = path.replace(/\{([^}]+)\}/g, ':$1');
         const baseScore = (norm.split('/').length * 10) + (norm.includes(':') ? 0 : 2);
         const starPath = norm.endsWith('/') ? `${norm}* ` : `${norm}/*`;
         return [
-            { pattern: new URLPattern({ pathname: norm }), rule, score: baseScore + 5 },
-            { pattern: new URLPattern({ pathname: starPath }), rule, score: baseScore }
+            { pattern: new URLPattern({ pathname: norm }, DUMMY_BASE), rule, score: baseScore + 5 },
+            { pattern: new URLPattern({ pathname: starPath }, DUMMY_BASE), rule, score: baseScore }
         ];
     })
     .sort((a, b) => b.score - a.score);

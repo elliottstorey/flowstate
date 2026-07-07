@@ -3,6 +3,8 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 
+const DUMMY_BASE = 'http://localhost';
+
 class Router {
     #httpMethods = new Set(["GET", "POST", "PUT", "DELETE", "PATCH", "HEAD", "OPTIONS"]);
 
@@ -19,7 +21,7 @@ class Router {
         console.log(fullPath,relativePath)
 
         if (!relativePath) {
-            return new URLPattern({ pathname: "/" });
+            return new URLPattern({ pathname: "/" }, DUMMY_BASE);
         }
 
         const segments = relativePath.split(path.sep).map(segment => {
@@ -35,7 +37,7 @@ class Router {
         console.log(segments)
         console.log(path.posix.join("/", ...segments))
 
-        return new URLPattern({ pathname: path.posix.join("/", ...segments) });
+        return new URLPattern({ pathname: path.posix.join("/", ...segments) }, DUMMY_BASE);
     }
 
     async build() {
@@ -89,10 +91,21 @@ class Router {
     }
 
     route(method, url) {
-        const route = this.routes.find(route => route.method == method && route.pattern.test(url));
+        // 1. Strip query strings if 'url' comes directly from req.url
+        const pathOnly = url.split('?')[0];
+
+        // 2. Pass DUMMY_BASE as the second argument to test()
+        const route = this.routes.find(route => 
+            route.method == method && route.pattern.test(pathOnly, DUMMY_BASE)
+        );
+        
         if (!route) return null;
 
-        return { ...route, params: route.pattern.exec(url).pathname.groups };
+        // 3. Pass DUMMY_BASE as the second argument to exec()
+        return { 
+            ...route, 
+            params: route.pattern.exec(pathOnly, DUMMY_BASE).pathname.groups 
+        };
     }
 }
 
