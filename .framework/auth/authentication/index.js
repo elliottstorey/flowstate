@@ -5,12 +5,6 @@ import config from "#config/auth";
 
 const DUMMY_BASE = 'http://localhost';
 
-const google = new arctic.Google(
-	process.env.GOOGLE_CLIENT_ID,
-	process.env.GOOGLE_CLIENT_SECRET,
-	"http://localhost/auth/callback/google",
-);
-
 async function server({ db, cookies }) {
 	let user = null;
 	const token = cookies.session;
@@ -46,18 +40,24 @@ const routes = [
 	{
 		method: "GET",
 		pattern: new URLPattern({ pathname: "/auth/google", baseURL: DUMMY_BASE }),
-		handler: ({ cookies, redirect }) => {
+		handler: ({ url, cookies, redirect }) => {
 			const state = arctic.generateState();
 			const codeVerifier = arctic.generateCodeVerifier();
 			const scopes = ["openid", "profile", "email"];
 
-			const url = google.createAuthorizationURL(state, codeVerifier, scopes);
-			url.searchParams.set("prompt", "select_account");
+            const google = new arctic.Google(
+                process.env.GOOGLE_CLIENT_ID,
+                process.env.GOOGLE_CLIENT_SECRET,
+                new URL("/auth/callback/google", url.origin)
+            );
+
+			const authorizationURL = google.createAuthorizationURL(state, codeVerifier, scopes);
+			authorizationURL.searchParams.set("prompt", "select_account");
 
 			cookies.state = state;
 			cookies.code_verifier = codeVerifier;
 
-			return redirect(url.href);
+			return redirect(authorizationURL.href);
 		},
 	},
 	{
@@ -73,6 +73,12 @@ const routes = [
 			if (!code || !state || !storedState || state !== storedState) {
 				throw error(400, "Invalid OAuth request");
 			}
+
+            const google = new arctic.Google(
+                process.env.GOOGLE_CLIENT_ID,
+                process.env.GOOGLE_CLIENT_SECRET,
+                new URL("/auth/callback/google", url.origin)
+            );
 
 			const tokens = await google.validateAuthorizationCode(
 				code,
