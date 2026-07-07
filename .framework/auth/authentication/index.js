@@ -45,7 +45,7 @@ function client({ user }) {
 const routes = [
 	{
 		method: "GET",
-		pattern: new URLPattern({ pathname: "/auth/google" }, DUMMY_BASE),
+		pattern: new URLPattern({ pathname: "/auth/google", baseURL: DUMMY_BASE }),
 		handler: ({ cookies, redirect }) => {
 			const state = arctic.generateState();
 			const codeVerifier = arctic.generateCodeVerifier();
@@ -62,7 +62,7 @@ const routes = [
 	},
 	{
 		method: "GET",
-		pattern: new URLPattern({ pathname: "/auth/callback/google" }, DUMMY_BASE),
+		pattern: new URLPattern({ pathname: "/auth/callback/google", baseURL: DUMMY_BASE }),
 		handler: async ({ db, url, cookies, redirect, error }) => {
 			const code = url.searchParams.get("code");
 			const state = url.searchParams.get("state");
@@ -116,7 +116,7 @@ const routes = [
 	},
 	{
 		method: "DELETE",
-		pattern: new URLPattern({ pathname: "/auth/session" },DUMMY_BASE),
+		pattern: new URLPattern({ pathname: "/auth/session", baseURL: DUMMY_BASE }),
 		handler: async ({ db, cookies }) => {
 			const token = cookies.session;
 			if (token) {

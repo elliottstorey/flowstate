@@ -86,7 +86,7 @@ async function client({ payments }) {
 const routes = [
 	{
 		method: "POST",
-		pattern: new URLPattern({ pathname: "/payments/subscribe" }, DUMMY_BASE),
+		pattern: new URLPattern({ pathname: "/payments/subscribe", baseURL: DUMMY_BASE }),
 		handler: async ({ db, user, body }) => {
 			if (!user) return { status: 401, body: { error: "Unauthorized" } };
 
@@ -120,7 +120,7 @@ const routes = [
 	},
 	{
 		method: "POST",
-		pattern: new URLPattern({ pathname: "/payments/webhook" }, DUMMY_BASE),
+		pattern: new URLPattern({ pathname: "/payments/webhook", baseURL: DUMMY_BASE }),
 		handler: async ({ db, request }) => {
 			const rawBody = await text(request);
 			const signature = request.headers["stripe-signature"];

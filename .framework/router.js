@@ -21,7 +21,7 @@ class Router {
         console.log(fullPath,relativePath)
 
         if (!relativePath) {
-            return new URLPattern({ pathname: "/" }, DUMMY_BASE);
+            return new URLPattern({ pathname: "/", baseURL: DUMMY_BASE });
         }
 
         const segments = relativePath.split(path.sep).map(segment => {
@@ -37,7 +37,7 @@ class Router {
         console.log(segments)
         console.log(path.posix.join("/", ...segments))
 
-        return new URLPattern({ pathname: path.posix.join("/", ...segments) }, DUMMY_BASE);
+        return new URLPattern({ pathname: path.posix.join("/", ...segments), baseURL: DUMMY_BASE });
     }
 
     async build() {

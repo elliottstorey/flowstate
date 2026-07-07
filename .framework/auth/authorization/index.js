@@ -9,8 +9,8 @@ const compiledRules = Object.entries(config.authorize || {})
         const baseScore = (norm.split('/').length * 10) + (norm.includes(':') ? 0 : 2);
         const starPath = norm.endsWith('/') ? `${norm}* ` : `${norm}/*`;
         return [
-            { pattern: new URLPattern({ pathname: norm }, DUMMY_BASE), rule, score: baseScore + 5 },
-            { pattern: new URLPattern({ pathname: starPath }, DUMMY_BASE), rule, score: baseScore }
+            { pattern: new URLPattern({ pathname: norm, baseURL: DUMMY_BASE }), rule, score: baseScore + 5 },
+            { pattern: new URLPattern({ pathname: starPath, baseURL: DUMMY_BASE }), rule, score: baseScore }
         ];
     })
     .sort((a, b) => b.score - a.score);
