@@ -7,7 +7,7 @@ export default {
     subscriptions: {
         monthly: {
             product: "vault",
-            priceId: "price_1ToWeTEbbZzINP9Js0i69y7l" // 60/month
+            priceId: process.env.STRIPE_PRICE_ID // 60/month
         }
     },
 }
