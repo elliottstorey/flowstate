@@ -1,3 +1,4 @@
+import "urlpattern-polyfill";
 import fs from "node:fs/promises";
 import path from "node:path";
 import { pathToFileURL } from "node:url";

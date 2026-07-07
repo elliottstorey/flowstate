@@ -1,3 +1,4 @@
+import "urlpattern-polyfill";
 import config from "#config/auth";
 
 const compiledRules = Object.entries(config.authorize || {})
