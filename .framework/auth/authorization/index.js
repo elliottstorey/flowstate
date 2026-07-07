@@ -19,7 +19,7 @@ async function server(context) {
     const { url, redirect, user } = context;
 
     // 1. Find the highest-scoring matching rule
-    const match = compiledRules.find(r => r.pattern.test({ pathname: url.pathname }));
+    const match = compiledRules.find(r => r.pattern.test(url.pathname, DUMMY_BASE));
 
     // 2. Open by default if no rules match
     if (!match) return { user };
