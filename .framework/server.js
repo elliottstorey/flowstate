@@ -71,11 +71,11 @@ class Server {
 	}
 
 	async #handleHttp(request, response) {
+        console.log(request.method, request.url)
 		const route = this.router.route(request.method, request.url);
+        console.log(route);
 		const context = new HttpContext(request, response);
 		const clientState = { ip: context.ip };
-
-		console.log(request, route, context);
 
 		try {
 			if (!route) throw context.error(404, "Not Found");
