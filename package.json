@@ -5,9 +5,9 @@
   "main": "framework.js",
   "type": "module",
   "scripts": {
-    "prestart": "node --env-file=.env .framework/db/push.js",
-    "start": "node --env-file=.env framework.js",
-    "dev": "node --env-file=.env framework.js"
+    "prestart": "node --env-file-if-exists=.env .framework/db/push.js",
+    "start": "node --env-file-if-exists=.env framework.js",
+    "dev": "node --env-file-if-exists=.env framework.js"
   },
   "imports": {
     "#framework/*": "./.framework/*.js",
