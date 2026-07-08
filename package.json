@@ -4,7 +4,9 @@
   "description": "A fullstack JS framework aiming to reduce boilerplate and keep code vanilla.",
   "main": "framework.js",
   "type": "module",
+  "private": true,
   "scripts": {
+    "db:seed": "node src/seed.js",
     "prestart": "node --env-file-if-exists=.env .framework/db/push.js",
     "start": "node --env-file-if-exists=.env framework.js",
     "dev": "node --env-file-if-exists=.env framework.js"

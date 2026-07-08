@@ -1,12 +1,6 @@
-import fs from 'node:fs/promises';
-import postgres from 'postgres';
+import postgres from "postgres";
 
-// Initialize the database connection
-const sql = postgres('postgresql://postgres:password@localhost:5432/postgres', {
-    max: 10,
-});
-
-async function seed() {
+async function seed({db}) {
     try {
         console.log('📖 Loading lsat_data.json...');
         // Make sure the path accurately points to where your python script dumps the JSON

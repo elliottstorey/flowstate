@@ -18,7 +18,6 @@ class Router {
     getURLPattern(parentPath, name = "") {
         const fullPath = path.join(parentPath, name);
         const relativePath = path.relative(this.dir, fullPath);
-        console.log(fullPath,relativePath)
 
         if (!relativePath) {
             return new URLPattern({ pathname: "/", baseURL: DUMMY_BASE });
@@ -33,9 +32,6 @@ class Router {
             }
             return segment;
         });
-
-        console.log(segments)
-        console.log(path.posix.join("/", ...segments))
 
         return new URLPattern({ pathname: path.posix.join("/", ...segments), baseURL: DUMMY_BASE });
     }
@@ -56,7 +52,6 @@ class Router {
 
             const filePath = path.join(file.parentPath, file.name);
             const method = path.basename(file.name, ".js");
-            console.log(file.parentPath)
             const dirPattern = this.getURLPattern(file.parentPath);
 
             if (this.#httpMethods.has(method) || file.name == "ws.js") {

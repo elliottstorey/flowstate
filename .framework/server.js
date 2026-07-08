@@ -71,10 +71,7 @@ class Server {
 	}
 
 	async #handleHttp(request, response) {
-        console.log(this.router.routes)
-        console.log(request.method, request.url)
 		const route = this.router.route(request.method, request.url);
-        console.log(route);
 		const context = new HttpContext(request, response);
 		const clientState = { ip: context.ip };
 
