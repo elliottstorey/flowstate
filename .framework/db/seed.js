@@ -5,6 +5,6 @@ const db = postgres(process.env.DATABASE_URL);
 
 try {
     await seed({ db });
-} catch{
-
+} catch (error) {
+    console.error(error)
 }
