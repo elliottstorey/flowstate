@@ -9,19 +9,20 @@
 <main>
     <div id="tutor">
         <p id="day-period">Wednesday morning</p>
-        <h1 id="greeting">You're 11 hours away from your target score.</h1>
-        <p id="content">Your logical reasoning is getting sharp, conclusions and assumptions are genuinely strong now. The place you're still leaving points on the table is reading comprehension double passages. That's the focus today. Once you crack those 175 is very much in range!</p>
-        <div id="topics">
+        <h1 id="greeting">Welcome to flowstate!</h1>
+        <!-- <p id="content">Welcome to flowstate! I am your personal tutor and I'm excited to help you reach your dream score. To get started </p> -->
+        <p id="content">Most prep courses throw random questions at you; we figure out exactly what you need. Answer your first set of questions so the flowstate engine can analyze your logic, identify your weak spots, and unlock your predicted score.</p>
+        <div id="topics" hidden>
             <span class="chip">Reading Comprehension</span>
             <span class="chip">Author's Attitude</span>
             <span class="chip">Difficulty 4</span>
         </div>
-        <button id="start" onclick="$.url += '/adaptive'">Continue studying --></button>
+        <button id="start" onclick="$.url += '/adaptive'">Start practicing --></button>
     </div>
     <div id="stats">
         <div class="stat">
             <p class="title">Predicted Score</p>
-            <p class="metric"><span>152</span> --> 180</p>
+            <p class="metric"><span>152</span> / 180</p>
             <div id="predicted-meter" class="meter"></div>
             <p class="context">Started at 130</p>
         </div>
@@ -42,7 +43,7 @@
             <p class="context">left to reach the next milestone</p>
         </div>
     </div>
-    <div id="tests" style="border: 2px dashed var(--ui); height: 100%; justify-content: center; align-items: center;">
+    <div id="tests" style="border: 2px dashed var(--ui);">
         <h3>Practice Tests (Coming Soon)</h3>
         <!-- <p>Your practice exams have been trending upwards, which is great news. Take another one now for the most accurate score prediction.</p>
         <div>
@@ -82,7 +83,7 @@
         </div>
         <button id="new-exam">New practice exam</button> -->
     </div>
-    <div id="lessons" style="border: 2px dashed var(--ui); display: flex; height: 100%; justify-content: center; align-items: center;">
+    <div id="lessons" style="border: 2px dashed var(--ui);">
         <h3>Lessons (Coming Soon)</h3>
         <!-- <div class="section">
             <h4>Logical reasoning</h4>

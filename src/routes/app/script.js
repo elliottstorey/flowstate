@@ -1,4 +1,5 @@
 const DOM = {
+    dayPeriod: document.getElementById("day-period"),
     stats: {
         predicted: {
             value: document.querySelector('.stat:nth-child(1) .metric span'),
@@ -21,6 +22,26 @@ const DOM = {
     }
 };
 
+function dayPeriod() {
+    const now = new Date();
+    const day = new Intl.DateTimeFormat('en-US', { weekday: 'long' }).format(now);
+
+    const hour = now.getHours(); // Returns 0-23
+    let period;
+
+    if (hour >= 5 && hour < 12) {
+        period = 'morning';
+    } else if (hour >= 12 && hour < 17) {
+        period = 'afternoon';
+    } else if (hour >= 17 && hour < 21) {
+        period = 'evening';
+    } else {
+        period = 'night';
+    }
+
+    DOM.dayPeriod.textContent = `${day} ${period}`;
+}
+
 // Require them to answer roughly 20 questions before unlocking predictions
 const CONFIDENCE_THRESHOLD = 0.25;
 const FULL_TEST_QUESTIONS = 76;
@@ -35,27 +56,28 @@ async function score() {
         // --- 1. HANDLE LOW CONFIDENCE (CALIBRATING STATE) ---
         if (data.confidence < CONFIDENCE_THRESHOLD) {
             const questionsRemaining = Math.ceil((CONFIDENCE_THRESHOLD - data.confidence) * FULL_TEST_QUESTIONS);
+            const percentComplete = (data.confidence / CONFIDENCE_THRESHOLD) * 100;
 
             // Mask Predicted Score
-            DOM.stats.predicted.value.textContent = "---";
-            DOM.stats.predicted.context.textContent = `Answer ~${questionsRemaining} more questions to unlock`;
-            if (DOM.stats.predicted.meter) DOM.stats.predicted.meter.style.width = "0%";
+            DOM.stats.predicted.value.textContent = "?";
+            DOM.stats.predicted.context.textContent = `Answer ~${questionsRemaining} more questions for prediction`;
+            if (DOM.stats.predicted.meter) DOM.stats.predicted.meter.style.setProperty('--fill', `${Math.min(100, Math.max(0, percentComplete))}%`);
 
             // Mask Progress
-            DOM.stats.progress.value.textContent = "---";
-            DOM.stats.progress.context.textContent = "Establishing baseline...";
-            if (DOM.stats.progress.meter) DOM.stats.progress.meter.style.width = "0%";
+            DOM.stats.progress.value.textContent = "?";
+            DOM.stats.progress.context.textContent = `Answer ~${questionsRemaining} more questions for prediction`;
+            if (DOM.stats.progress.meter) DOM.stats.progress.meter.style.setProperty('--fill', `${Math.min(100, Math.max(0, percentComplete))}%`);
 
             // Velocity can still show! (Questions/week is a pure volume metric)
             const currentV = data.velocity.currentWeek;
             const lastV = data.velocity.lastWeek;
             const vTrend = currentV >= lastV ? 'up' : 'down';
-            DOM.stats.velocity.metric.innerHTML = `<span>${currentV}</span> questions/week`;
-            DOM.stats.velocity.context.textContent = `${vTrend} from ${lastV} last week`;
+            DOM.stats.velocity.metric.innerHTML = `<span>?</span> questions/week`;
+            DOM.stats.velocity.context.textContent = `Answer ~${questionsRemaining} more questions for prediction`;
 
             // Mask Distance
-            DOM.stats.distance.value.textContent = "---";
-            DOM.stats.distance.context.textContent = "Awaiting predicted score";
+            DOM.stats.distance.value.textContent = `?`;
+            DOM.stats.distance.context.textContent = `Answer ~${questionsRemaining} more questions for prediction`;
 
             return; // Exit early so we don't render the calculated values below
         }
@@ -98,4 +120,5 @@ async function score() {
     }
 }
 
+dayPeriod();
 score();

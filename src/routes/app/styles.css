@@ -3,11 +3,13 @@ body {
 }
 
 nav {
-    padding: 1rem;
+    padding: clamp(1rem, 3vw, 1.5rem);
     border-bottom: 1px solid var(--ui);
     display: flex;
     justify-content: space-between;
     align-items: baseline;
+    flex-wrap: wrap; /* Wraps gracefully if the greeting gets too long */
+    gap: 1rem;
 }
 
 nav h2 {
@@ -20,15 +22,19 @@ nav p {
 }
 
 main {
-    padding: clamp(2rem, 5vw, 4rem);
+    /* Fluid padding and gap to tighten up on mobile */
+    padding: clamp(1.5rem, 5vw, 4rem);
+    gap: clamp(2rem, 5vw, 4rem);
     display: flex;
     flex-wrap: wrap;
-    gap: 4rem;
 }
 
-main>div {
-    min-width: 40ch;
+main > div {
+    /* 1. Tell it to aim for 2 columns (50% minus half the maximum gap) */
     flex: 1 1 calc(50% - 2rem);
+    
+    /* 2. Wrap to 1 column if the screen shrinks below 40ch, but never overflow */
+    min-width: min(100%, 40ch);
 }
 
 #tutor {
@@ -42,7 +48,7 @@ main>div {
 }
 
 #greeting {
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
     font-family: "Newsreader", serif;
 }
 
@@ -59,42 +65,31 @@ main>div {
     font-size: 0.8rem;
     color: var(--tx-2);
     background-color: var(--bg-2);
+    white-space: nowrap;
 }
-
-/* #start {
-    font-weight: bold;
-    padding: 1rem;
-    border: none;
-    background-color: var(--tx);
-    color: var(--bg);
-}
-
-#start:hover {
-    background-color: var(--bl);
-} */
 
 #stats {
     display: flex;
     flex-wrap: wrap;
-    gap: 2rem;
+    gap: clamp(1rem, 3vw, 2rem);
 }
 
 .stat {
-    min-width: 20ch;
     padding: 1rem;
     border-radius: 0.5rem;
-    flex: 1 1 calc(50% - 2rem);
+    background-color: var(--bg-2);
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
-    background-color: var(--bg-2);
+    
+    /* 1. Aim for exactly 2 columns (50% minus half the max gap) */
+    flex: 1 1 calc(50% - 1rem);
+    
+    /* 2. Wrap to 1 column on small screens, never overflowing */
+    min-width: min(100%, 20ch);
 }
 
-.stat .title {
-    color: var(--tx-2);
-}
-
-.stat .metric {
+.stat .title, .stat .metric {
     color: var(--tx-2);
 }
 
@@ -105,42 +100,36 @@ main>div {
 }
 
 .stat .meter {
-    /* 1. The Empty Track */
     height: 0.25rem;
     background: var(--ui);
     border-radius: 12px;
-
-    /* 2. Set context so the fill stays inside this track */
     position: relative;
 }
 
-/* This creates a "virtual" inner div for the fill */
 .stat .meter::before {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
     bottom: 0;
-
-    /* 3. The Fill Settings */
-    width: 75%;
+    width: var(--fill, 0%); 
     background: var(--bl);
-
-    /* 4. The Curved Edge! */
     border-radius: 12px;
-
-    /* Optional: Makes it smoothly animate if the --fill variable changes via JS */
     transition: width 0.3s ease;
 }
 
 .stat .context {
+    font-size: 0.9rem;
     color: var(--tx-3);
 }
 
-#tests {
+#tests, #lessons {
     display: flex;
     flex-direction: column;
     gap: 1rem;
+    border: 2px dashed var(--ui);
+    padding: clamp(1rem, 3vw, 1.5rem);
+    border-radius: 0.5rem;
 }
 
 h3 {
@@ -149,30 +138,29 @@ h3 {
     color: var(--tx-2);
 }
 
-#tests>div {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
-.test+.test {
+.test + .test, .topic + .topic {
     padding-top: 1rem;
     border-top: 1px solid var(--ui);
 }
 
-.test {
+.test, .topic {
     display: flex;
+    flex-wrap: wrap; /* Allows internal wrapping on tiny screens */
     justify-content: space-between;
+    align-items: baseline;
+    gap: 0.75rem;
 }
 
 .test .overview {
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
+    flex: 1 1 min(100%, 20ch);
 }
 
 .test .overview .date {
-    color: var(--tx-3)
+    color: var(--tx-3);
+    font-size: 0.9rem;
 }
 
 .test .overview .description {
@@ -181,8 +169,7 @@ h3 {
 
 .test .details {
     display: flex;
-    justify-content: baseline;
-    align-items: center;
+    align-items: baseline;
     gap: 0.5rem;
 }
 
@@ -192,35 +179,17 @@ h3 {
 }
 
 .test .details .delta {
-    color: var(--tx-2)
+    color: var(--tx-2);
 }
 
-/* #topics {
-    display: flex;
-    gap: 4rem;
-    margin-block: 2rem;
-} */
-
-#topics .section {
-    flex: 1;
+.section {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
 }
 
-#topics .section h4 {
-    margin-bottom: 1rem;
-}
-
-.topic+.topic {
-    padding-top: 1rem;
-    border-top: 1px solid var(--ui);
-}
-
-.topic {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
+.section h4 {
+    margin-bottom: 0.5rem;
 }
 
 .topic .chip.strong {
