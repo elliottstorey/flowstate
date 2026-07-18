@@ -61,25 +61,23 @@ section > div.visual { width: 100%; min-height: clamp(22rem, 40vh, 28rem); displ
 
 #social-proof { padding: 1.5rem 1rem; display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 1.5rem; background-color: var(--bg-2); border-block: 1px solid var(--ui); }
 #social-proof span { 
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-    gap: 1.5rem; 
     text-align: center; 
-    flex-wrap: wrap; /* Allows the dot to drop to a new line */
 }
 
 #social-proof span:not(:last-child)::after { 
     content: ""; 
-    display: block; 
+    display: inline-block; 
+    vertical-align: middle;
     height: 5px; 
-    flex-shrink: 0;
-    
-    /* Snaps from 5px to 100% width when the viewport drops below 48rem (~768px) */
+    margin-left: clamp(0rem, (100vw - 48rem) * 9999, 1.5rem);
+    margin-top: clamp(0rem, (48rem - 100vw) * 9999, 1.5rem);
     width: clamp(5px, (48rem - 100vw) * 9999, 100%); 
-    
-    /* Draws a 5px dot in the dead center of the element, no matter how wide it gets */
     background: radial-gradient(circle at center, var(--primary) 2.5px, transparent 2.5px); 
+}
+
+#social-proof span em {
+    color: var(--primary);
+    font-weight: bold;
 }
 
 #problem, #faq, #cta { justify-content: center; text-align: left; }
