@@ -2,8 +2,13 @@ body {
     flex-direction: column;
 }
 
+p {
+    font-size: 1.063rem;
+    line-height: 1.6;
+}
+
 nav {
-    padding: clamp(1rem, 3vw, 1.5rem);
+    padding: 1rem;
     border-bottom: 1px solid var(--ui);
     display: flex;
     justify-content: space-between;

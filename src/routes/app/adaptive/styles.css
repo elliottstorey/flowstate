@@ -56,9 +56,15 @@ nav h2 {
     margin-inline: auto;
 }
 
+#problem p {
+    font-size: 1.063rem;
+    line-height: 1.6;
+}
+
 #problem-heading {
     color: var(--tx-2);
     font-weight: 500;
+    font-size: 1rem !important;
 }
 
 #stem {
@@ -118,6 +124,11 @@ nav h2 {
     background-color: var(--bg-2);
     margin: 1rem;
     border-radius: 0.5rem;
+}
+
+#chat p {
+    font-size: 1.063rem;
+    line-height: 1.6;
 }
 
 #chat-heading {

@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&display=swap');
 
 :root {
+    --primary: var(--cy-2);
     --bg: hsl(48, 100%, 97%);
     --bg-2: hsl(51, 33%, 92%);
     --ui: hsl(51, 21%, 88%);
@@ -39,7 +40,7 @@
 }
 
 body {
-    height: 100vh;
+    min-height: 100vh;
     width: 100vw;
     display: flex;
     background-color: var(--bg);
@@ -53,7 +54,6 @@ a {
     position: relative;
     color: var(--tx);
     text-decoration: none;
-    font-weight: 500;
 }
 
 a::after {
@@ -62,12 +62,12 @@ a::after {
     left: 0;
     bottom: -2px;
     width: 100%;
-    height: 2px;
+    height: 1px;
     background: var(--tx);
     transform: scaleX(0);
     transform-origin: left;
     transition: transform 0.3s ease;
-    background-color: var(--cy)
+    background-color: var(--cy-2)
 }
 
 a:hover::after {
@@ -76,6 +76,7 @@ a:hover::after {
 
 button {
     font: inherit;
+    font-size: inherit;
     padding: 0.5rem 0.75rem;
     background-color: transparent;
     border: 1px solid var(--ui-3);
@@ -96,6 +97,19 @@ button:disabled {
     opacity: 0.5;
 }
 
+button.cta {
+    border: none;
+    padding: 1rem 1.5rem;
+    font-weight: bold;
+    color: var(--bg);
+    background-color: var(--tx);
+    text-align: center;
+}
+
+button.cta:hover {
+    background-color: var(--cy-2);
+}
+
 input {
     width: 100%;
     padding: 0.5rem 0.75rem;
@@ -103,4 +117,9 @@ input {
     border: 1px solid var(--ui-3);
     border-radius: 0.5rem;
     font: inherit;
+}
+
+p.muted {
+    font-size: 1rem;
+    color: var(--tx-3);
 }

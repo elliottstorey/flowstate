@@ -42,78 +42,114 @@ function dayPeriod() {
     DOM.dayPeriod.textContent = `${day} ${period}`;
 }
 
-// Require them to answer roughly 20 questions before unlocking predictions
-const CONFIDENCE_THRESHOLD = 0.25;
-const FULL_TEST_QUESTIONS = 76;
-
 async function score() {
     try {
         const response = await fetch("/api/score");
         if (!response.ok) throw new Error("Failed to fetch score data");
 
         const data = await response.json();
-
-        // --- 1. HANDLE LOW CONFIDENCE (CALIBRATING STATE) ---
-        if (data.confidence < CONFIDENCE_THRESHOLD) {
-            const questionsRemaining = Math.ceil((CONFIDENCE_THRESHOLD - data.confidence) * FULL_TEST_QUESTIONS);
-            const percentComplete = (data.confidence / CONFIDENCE_THRESHOLD) * 100;
-
-            // Mask Predicted Score
-            DOM.stats.predicted.value.textContent = "?";
-            DOM.stats.predicted.context.textContent = `Answer ~${questionsRemaining} more questions for prediction`;
-            if (DOM.stats.predicted.meter) DOM.stats.predicted.meter.style.setProperty('--fill', `${Math.min(100, Math.max(0, percentComplete))}%`);
-
-            // Mask Progress
-            DOM.stats.progress.value.textContent = "?";
-            DOM.stats.progress.context.textContent = `Answer ~${questionsRemaining} more questions for prediction`;
-            if (DOM.stats.progress.meter) DOM.stats.progress.meter.style.setProperty('--fill', `${Math.min(100, Math.max(0, percentComplete))}%`);
-
-            // Velocity can still show! (Questions/week is a pure volume metric)
-            const currentV = data.velocity.currentWeek;
-            const lastV = data.velocity.lastWeek;
-            const vTrend = currentV >= lastV ? 'up' : 'down';
-            DOM.stats.velocity.metric.innerHTML = `<span>?</span> questions/week`;
-            DOM.stats.velocity.context.textContent = `Answer ~${questionsRemaining} more questions for prediction`;
-
-            // Mask Distance
-            DOM.stats.distance.value.textContent = `?`;
-            DOM.stats.distance.context.textContent = `Answer ~${questionsRemaining} more questions for prediction`;
-
-            return; // Exit early so we don't render the calculated values below
-        }
-
-        // --- 2. HANDLE HIGH CONFIDENCE (NORMAL STATE) ---
-
-        // Predicted Score
         const baseline = data.predicted - data.progress.points;
-        DOM.stats.predicted.value.textContent = data.predicted;
-        DOM.stats.predicted.context.textContent = `Started at ${baseline}`;
 
-        if (DOM.stats.predicted.meter) {
-            const predictedPercent = ((data.predicted - 120) / (180 - 120)) * 100;
-            DOM.stats.predicted.meter.style.width = `${Math.min(100, Math.max(0, predictedPercent))}%`;
-        }
-
-        // Progress
-        DOM.stats.progress.value.textContent = `+${data.progress.points}`;
-
-        if (DOM.stats.progress.meter) {
-            const totalPossibleGain = 180 - baseline;
-            const progressPercent = totalPossibleGain > 0 ? (data.progress.points / totalPossibleGain) * 100 : 0;
-            DOM.stats.progress.meter.style.width = `${Math.min(100, Math.max(0, progressPercent))}%`;
-        }
-
-        // Velocity 
+        // ==========================================
+        // 1. VELOCITY (Always active, supports ==)
+        // ==========================================
         const currentV = data.velocity.currentWeek;
         const lastV = data.velocity.lastWeek;
-        const vTrend = currentV >= lastV ? 'up' : 'down';
+        
+        let vTrendText = 'same as';
+        if (currentV > lastV) vTrendText = 'up from';
+        else if (currentV < lastV) vTrendText = 'down from';
 
         DOM.stats.velocity.metric.innerHTML = `<span>${currentV}</span> questions/week`;
-        DOM.stats.velocity.context.textContent = `${vTrend} from ${lastV} last week`;
+        DOM.stats.velocity.context.textContent = `${vTrendText} ${lastV} last week`;
 
-        // Distance
-        DOM.stats.distance.value.textContent = `~${data.distance.questionsLeft}`;
-        DOM.stats.distance.context.textContent = `left to reach ${data.distance.nextMilestone}`;
+        // ==========================================
+        // 2. DYNAMIC STATE MACHINE (1/3 Splits)
+        // ==========================================
+        
+        if (data.confidence < 0.33) {
+            
+            // --- STATE 1: Calibrating (0% - 33%) ---
+            // Distance is hijacked to show a strict percentage of calibration progress
+            const percentCalibrated = Math.min(100, Math.round((data.confidence / 0.33) * 100));
+            DOM.stats.distance.value.textContent = `${percentCalibrated}%`;
+            DOM.stats.distance.context.textContent = `calibration complete`;
+
+            // Predictive metrics are locked with a clean ?
+            DOM.stats.predicted.value.textContent = "?";
+            DOM.stats.predicted.context.textContent = `Calculating initial baseline...`;
+            
+            DOM.stats.progress.value.textContent = "?";
+            DOM.stats.progress.context.textContent = `Calculating initial baseline...`;
+
+            // Meters act as a loading bar for the calibration phase
+            if (DOM.stats.predicted.meter) {
+                DOM.stats.predicted.meter.style.setProperty('--fill', `${percentCalibrated}%`);
+                DOM.stats.predicted.meter.style.opacity = "1.0"; 
+            }
+            if (DOM.stats.progress.meter) {
+                DOM.stats.progress.meter.style.setProperty('--fill', `${percentCalibrated}%`);
+                DOM.stats.progress.meter.style.opacity = "1.0";
+            }
+
+        } else if (data.confidence < 0.66) {
+            
+            // --- STATE 2: Sensitive Straight-Mapping (33% - 66%) ---
+            // Distance switches back to standard milestone tracking
+            DOM.stats.distance.value.textContent = `~${data.distance.questionsLeft}`;
+            DOM.stats.distance.context.textContent = `left to reach ${data.distance.nextMilestone}`;
+
+            // Score is mapped but dimmed
+            DOM.stats.predicted.value.textContent = data.predicted;
+            DOM.stats.predicted.value.style.opacity = "0.4";
+            DOM.stats.predicted.context.textContent = `Engine highly sensitive. Keep practicing.`;
+            
+            // Progress is mapped but dimmed
+            DOM.stats.progress.value.textContent = `+${data.progress.points}`;
+            DOM.stats.progress.value.style.opacity = "0.4";
+            DOM.stats.progress.context.textContent = `Estimated points gained`;
+
+            // Meters map to actual scale, but visually dimmed to match text
+            if (DOM.stats.predicted.meter) {
+                const predictedPercent = ((data.predicted - 120) / (180 - 120)) * 100;
+                DOM.stats.predicted.meter.style.setProperty('--fill', `${Math.min(100, Math.max(0, predictedPercent))}%`);
+                DOM.stats.predicted.meter.style.opacity = "0.4";
+            }
+            if (DOM.stats.progress.meter) {
+                const totalPossibleGain = 180 - baseline;
+                const progressPercent = totalPossibleGain > 0 ? (data.progress.points / totalPossibleGain) * 100 : 0;
+                DOM.stats.progress.meter.style.setProperty('--fill', `${Math.min(100, Math.max(0, progressPercent))}%`);
+                DOM.stats.progress.meter.style.opacity = "0.4";
+            }
+
+        } else {
+            
+            // --- STATE 3: Locked Anchor (66%+) ---
+            DOM.stats.distance.value.textContent = `~${data.distance.questionsLeft}`;
+            DOM.stats.distance.context.textContent = `left to reach ${data.distance.nextMilestone}`;
+
+            // Metrics reach full opacity
+            DOM.stats.predicted.value.textContent = data.predicted;
+            DOM.stats.predicted.value.style.opacity = "1.0"; 
+            DOM.stats.predicted.context.textContent = `Confidence threshold reached. Started at ${baseline}.`;
+            
+            DOM.stats.progress.value.textContent = `+${data.progress.points}`;
+            DOM.stats.progress.value.style.opacity = "1.0";
+            DOM.stats.progress.context.textContent = `Points since baseline`;
+
+            // Meters map to actual scale, full opacity
+            if (DOM.stats.predicted.meter) {
+                const predictedPercent = ((data.predicted - 120) / (180 - 120)) * 100;
+                DOM.stats.predicted.meter.style.setProperty('--fill', `${Math.min(100, Math.max(0, predictedPercent))}%`);
+                DOM.stats.predicted.meter.style.opacity = "1.0";
+            }
+            if (DOM.stats.progress.meter) {
+                const totalPossibleGain = 180 - baseline;
+                const progressPercent = totalPossibleGain > 0 ? (data.progress.points / totalPossibleGain) * 100 : 0;
+                DOM.stats.progress.meter.style.setProperty('--fill', `${Math.min(100, Math.max(0, progressPercent))}%`);
+                DOM.stats.progress.meter.style.opacity = "1.0";
+            }
+        }
 
     } catch (error) {
         console.error("Error updating dashboard:", error);

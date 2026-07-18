@@ -1,75 +1,173 @@
 <link rel="stylesheet" href="styles.css">
 
-<nav>
+<header>
     <h2>flowstate</h2>
     <button onclick="$.url = '/app'">See your first question --></button>
-</nav>
+</header>
 
-<main>
-    <div id="copy">
-        <p class="chip"><span class="siri-orb" style="--size: 1.25rem;"></span>The most effective & efficient way to study for the LSAT</p>
-        <h1>Don't just do more practice questions. Do the right ones, and learn from them.</h1>
-        <div id="hook">
-            <p>Most prep courses throw random questions at you and hope something sticks. Flowstate is different. We pinpoint exactly what's holding your score back:</p>
-            <li><b>Laser-focused practice:</b> We feed you the exact question you need to see next based on your weak spots.</li>
-            <li><b>Instant Socratic feedback:</b> Miss a question? Your personal tutor steps in immediately to guide you to the right answer.</li>
-            <li><b>Faster score jumps:</b> Fix your mistakes while they are fresh, not hours later in a review session.</li>
-        </div>
+<section id="hero">
+    <div class="copy">
+        <p class="chip"><span class="siri-orb" style="--size: 1.35rem;"></span>Study smarter, not longer</p>
+        <h1>The fastest way to raise your LSAT score</h1>
+        <p>A personalized approach to the LSAT where you learn by doing. Our adaptive platform targets your exact weaknesses, feeds you the perfect question at the perfect time, and walks you through mistakes with your own private tutor. Get a higher score in half the study time.</p>
         <button class="cta" onclick="$.url = '/app'">See your first question --></button>
-        <p id="sub-cta">No credit card required. Answer just one question to see how it works.</p>        
+        <p class="muted" style="margin-top: -0.5rem">No credit card needed</p>
     </div>
-    <div id="visual">
-    <div class="tracker">
-        <div class="tstep"><span class="tdot"></span><span class="label">engine picks</span></div>
-        <div class="tline"></div>
-        <div class="tstep"><span class="tdot"></span><span class="label">tutor teaches</span></div>
-        <div class="tline"></div>
-        <div class="tstep"><span class="tdot"></span><span class="label">repeats, sharper</span></div>
-    </div>
-    <div id="browser">
-        <div id="nav">
-            <span class="dot"></span>
-            <span class="dot"></span>
-            <span class="dot"></span>
-        </div>
-        <div id="engine-strip">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5.5" stroke="currentColor" stroke-width="1.3"/><path d="M7 4V7L9 8.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
-            <span>Picked for you — <b>you've missed 3 Necessary Assumption questions this week</b></span>
-        </div>
-        <div id="window">
-            <div id="question">
-                <p id="stimulus">Every award-winning novel in the contest had a strong opening line. My novel has a strong opening line.</p>
-                <p id="stem">What flaw does this argument commit?</p>
-                <div id="choices">
-                    <button id="A" class="choice incorrect">
-                        <p>
-                            <span class="letter">A</span>
-                            <span class="content">The novel will win the award.</span>
-                            <span class="picked-tag">your pick</span>
-                        </p>
-                    </button>
-                    <button id="B" class="choice">
-                        <p>
-                            <span class="letter">B</span>
-                            <span class="content">It treats a shared trait as a guarantee of the outcome.</span>
-                        </p>
-                    </button>
-                    <button id="C" class="choice">
-                        <p>
-                            <span class="letter">C</span>
-                            <span class="content">It assumes the judges read the opening line first.</span>
-                        </p>
-                    </button>
-                </div>
+    <div class="visual">
+        <div id="browser">
+            <div id="nav">
+                <span class="dot" style="background-color: var(--re-2);"></span>
+                <span class="dot" style="background-color: var(--ye-2);"></span>
+                <span class="dot" style="background-color: var(--gr-2);"></span>
             </div>
-            <div id="chat">
-                <p id="chat-heading">From your personal tutor</p>
-                <div id="messages">
-                    <p>Hold on... a strong opening line was true of every winner. Does that mean it guarantees a win, or just that winners happened to have it too?</p>
+            <div id="demo">
+                <div class="screen s1">
+                    <p class="chip small">Assumption</p>
+                    <p class="prompt">The columnist argues that rising commute times are the primary cause of declining civic participation...</p>
+                    <div class="choice">A. Longer commutes reduce leisure time</div>
+                    <div class="choice pick">B. No other factor explains the decline</div>
+                    <div class="choice">C. Civic participation was higher in the past</div>
                 </div>
+                <div class="screen s2">
+                    <p class="tutor-line"><span class="dot"></span>AI Tutor</p>
+                    <p class="tutor-bubble">Not quite — what does the columnist assume no other factor explains?</p>
+                </div>
+                <div class="screen s3">
+                    <p class="adaptive-label">Personalized for you</p>
+                    <div class="next-pick"><span>Up next: Assumption · Medium</span><span>→</span></div>
+                </div>
+                <div class="progress"><span class="p1"></span><span class="p2"></span><span class="p3"></span></div>
             </div>
         </div>
-        <div id="loop-footer"><span class="arrow">→</span><span>Logged. Next question already queued.</span></div>
     </div>
-</div>
-</main>
+</section>
+
+<section id="social-proof">
+    <span>Trusted by 4,300+ Pre-Law Students</span>
+    <span>Average Score Increase: +11 Points</span>
+    <span>Official LSAC Licensed Questions</span>
+</section>
+
+<section id="problem">
+    <div class="copy">
+        <h2>You are wasting hundreds of hours studying the wrong way.</h2>
+        <p>You are probably practicing the wrong things. Standard prep companies treat every student the same, handing you a giant bucket of random questions and a static answer key. If you already excel at logic games, doing 50 more wastes your time, and if you suck at conditional logic, reading a static textbook chapter won't fix it. You don't need more practice material — you need targeted reps, instant feedback, and a system that actually adapts to your specific weaknesses in real time.</p>
+    </div>
+</section>
+
+<section id="algorithm">
+    <div class="visual">
+        <div class="algorithm-wrap">
+            <p class="engine-heading"><span class="dot"></span>Building your next question</p>
+            <div class="slots">
+                <div class="slot a">
+                    <p class="slot-label">Skill</p>
+                    <div class="reel-window"><div class="reel reelA">
+                        <div class="opt">Strengthen</div>
+                        <div class="opt">Flaw</div>
+                        <div class="opt">Parallel</div>
+                        <div class="opt">Inference</div>
+                        <div class="opt final">Assumption</div>
+                    </div></div>
+                </div>
+                <div class="slot b">
+                    <p class="slot-label">Difficulty</p>
+                    <div class="reel-window"><div class="reel reelB">
+                        <div class="opt">Easy</div>
+                        <div class="opt">Hard</div>
+                        <div class="opt final">Medium</div>
+                    </div></div>
+                </div>
+                <div class="slot c">
+                    <p class="slot-label">Why this one</p>
+                    <div class="reel-window"><div class="reel reelC">
+                        <div class="opt">Common trap</div>
+                        <div class="opt">Timing drill</div>
+                        <div class="opt final">Your last miss</div>
+                    </div></div>
+                </div>
+            </div>
+            <div class="result">
+                <p class="text"><b>Assumption · Medium</b> — built around the exact trap you missed Tuesday</p>
+                <span class="gain"><span class="num">+0.6</span><span class="cap">projected pts</span></span>
+            </div>
+        </div>
+    </div>
+    <div class="copy">
+        <h2>Increase your LSAT score with every single question.</h2>
+        <p>Our engine tracks every single click, answer, and hesitation to map out your exact logical blindspots and instantly adjust your queue. If you are struggling with sufficient assumption questions, it knows exactly when to feed you the perfect question at the perfect difficulty so you spend 100% of your time fixing actual weaknesses instead of inflating your ego with easy points.</p>
+    </div>
+</section>
+
+<section id="tutor">
+    <div class="copy">
+        <h2>Stop reading answer keys and start understanding your mistakes.</h2>
+        <p>Reading a generic answer key is useless because it doesn't stop you from making the same mistake on test day. When you miss a question, our AI steps in as a world class private tutor, challenging your logic and forcing you to explain your reasoning until the concept actually clicks and you permanently fix the underlying flaw in your thinking.</p>
+    </div>
+    <div class="visual">
+        <div class="chat-wrap">
+            <p class="chat-heading"><span class="dot"></span>Tutor</p>
+            <div class="row tutor-turn">
+                <div class="typing"><span></span><span></span><span></span></div>
+                <p class="bubble">What is the author assuming about speed here?</p>
+            </div>
+            <div class="row user-turn">
+                <div class="typing"><span></span><span></span><span></span></div>
+                <p class="bubble">...that it always causes the accidents?</p>
+            </div>
+            <div class="row">
+                <p class="bubble success">✓ That's the gap — nice catch.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="tests" hidden>
+    <h2>Eliminate test-day anxiety with exact replicas of the real exam.</h2>
+    <p>Test-day anxiety destroys great scores, so we make the real exam feel like just another Tuesday. We give you full, timed exams using real, officially licensed LSAT questions inside an interface that behaves exactly like the actual digital test, putting you on pure autopilot when it matters most.</p>
+</section>
+
+<section id="lessons" hidden>
+    <h2>Learn core logical concepts in five minutes, not three hours.</h2>
+    <p>We don't do massive chapters or long-winded video lectures. When you need to learn a new logical concept, we give you quick, punchy, text-based frameworks so you can learn the core strategy in five minutes and jump right back into the arena to actually apply it.</p>
+</section>
+
+<section id="faq">
+    <div class="copy">
+        <h2>Frequently Asked Questions</h2>
+        <details name="faq">
+            <summary>Do you use real LSAT questions?</summary>
+            <p>Yes, we license real, historical questions directly from LSAC, so you will never waste time practicing on fake, weirdly worded knockoffs.</p>
+        </details>
+        <details name="faq">
+            <summary>How is this different from other popular LSAT prep sites?</summary>
+            <p>Most standard platforms give you a static syllabus and a massive bank of questions to sift through yourself. Our platform is actively adaptive; the AI constantly reorganizes your curriculum based on your real time performance and actively tutors you through your specific mistakes.</p>
+        </details>
+        <details name="faq">
+            <summary>I'm just starting. Will this work for beginners?</summary>
+            <p>Absolutely. The adaptive engine figures out exactly where your baseline is and builds your logical foundation from the ground up, moving at the exact pace you need.</p>
+        </details>
+        <details name="faq">
+            <summary>Can I use this alongside my existing prep class?</summary>
+            <p>Yes. Many students use expensive prep courses for the high level theory, but use our platform for their actual daily drilling because grinding adaptive questions is what ultimately moves the needle on your score.</p>
+        </details>
+        <details name="faq">
+            <summary>Isn't a real human tutor better than an AI?</summary>
+            <p>A great human tutor costs $200+ an hour and is only available once a week. Our AI tutor is available at 2:00 AM, never gets frustrated, and uses the exact same Socratic questioning methods the best human tutors use... for a fraction of the price.</p>
+        </details>
+    </div>
+</section>
+
+<section id="cta">
+    <h2>Ready to stop guessing and start understanding?</h2>
+    <button class="cta" onclick="$.url = '/app'">See your first question --></button>
+    <p class="muted" style="margin-top: -1.5rem">No credit card needed</p>
+</section>
+
+<footer>
+    <a href="mailto:support@withflowstate.com" target="_blank">support@withflowstate.com</a>
+    <span>
+       <a href="/terms" target="_blank">Terms</a>
+        <a href="/privacy" target="_blank">Privacy</a>
+    </span>
+</footer>
