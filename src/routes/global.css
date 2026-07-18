@@ -75,6 +75,7 @@ a:hover::after {
 }
 
 button {
+    color: inherit;
     font: inherit;
     font-size: inherit;
     padding: 0.5rem 0.75rem;
