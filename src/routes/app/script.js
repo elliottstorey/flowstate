@@ -1,13 +1,17 @@
 const DOM = {
     dayPeriod: document.getElementById("day-period"),
+    name: document.getElementById("name"),
+    start: document.getElementById("start"),
+    subscribe: document.getElementById("subscribe"),
+    answers: document.getElementById("answers"),
     stats: {
         predicted: {
-            value: document.querySelector('.stat:nth-child(1) .metric span'),
+            metric: document.querySelector('.stat:nth-child(1) .metric'),
             context: document.querySelector('.stat:nth-child(1) .context'),
             meter: document.getElementById('predicted-meter')
         },
         progress: {
-            value: document.querySelector('.stat:nth-child(2) .metric span'),
+            metric: document.querySelector('.stat:nth-child(2) .metric'),
             context: document.querySelector('.stat:nth-child(2) .context'),
             meter: document.getElementById('progress-meter')
         },
@@ -16,7 +20,7 @@ const DOM = {
             context: document.querySelector('.stat:nth-child(3) .context')
         },
         distance: {
-            value: document.querySelector('.stat:nth-child(4) .metric span'),
+            metric: document.querySelector('.stat:nth-child(4) .metric'),
             context: document.querySelector('.stat:nth-child(4) .context')
         }
     }
@@ -44,14 +48,14 @@ function dayPeriod() {
 
 async function score() {
     try {
-        const response = await fetch("/api/score");
+        const response = await fetch("/api/predictions");
         if (!response.ok) throw new Error("Failed to fetch score data");
 
         const data = await response.json();
         const baseline = data.predicted - data.progress.points;
 
         // ==========================================
-        // 1. VELOCITY (Always active, supports ==)
+        // 1. VELOCITY
         // ==========================================
         const currentV = data.velocity.currentWeek;
         const lastV = data.velocity.lastWeek;
@@ -69,85 +73,85 @@ async function score() {
         
         if (data.confidence < 0.33) {
             
-            // --- STATE 1: Calibrating (0% - 33%) ---
-            // Distance is hijacked to show a strict percentage of calibration progress
-            const percentCalibrated = Math.min(100, Math.round((data.confidence / 0.33) * 100));
-            DOM.stats.distance.value.textContent = `${percentCalibrated}%`;
-            DOM.stats.distance.context.textContent = `calibration complete`;
-
-            // Predictive metrics are locked with a clean ?
-            DOM.stats.predicted.value.textContent = "?";
-            DOM.stats.predicted.context.textContent = `Calculating initial baseline...`;
+            // --- STATE 1: Calibrating (Clean Empty State) ---
             
-            DOM.stats.progress.value.textContent = "?";
-            DOM.stats.progress.context.textContent = `Calculating initial baseline...`;
+            // DISTANCE: Manually calculate questions left to 0.33 threshold (76 total questions)
+            const questionsLeft = Math.max(1, Math.round(76 * (0.33 - data.confidence)));
+            DOM.stats.distance.metric.innerHTML = `<span>~${questionsLeft}</span> questions`;
+            DOM.stats.distance.context.textContent = `left to unlock your score`;
 
-            // Meters act as a loading bar for the calibration phase
+            // PREDICTED: Em-dash format
+            DOM.stats.predicted.metric.innerHTML = `<span>—</span> / 180`;
+            DOM.stats.predicted.context.textContent = `~${questionsLeft} questions to unlock prediction`;
+            
             if (DOM.stats.predicted.meter) {
+                const percentCalibrated = Math.min(100, Math.round((data.confidence / 0.33) * 100));
                 DOM.stats.predicted.meter.style.setProperty('--fill', `${percentCalibrated}%`);
-                DOM.stats.predicted.meter.style.opacity = "1.0"; 
             }
+
+            // PROGRESS: Em-dash format
+            DOM.stats.progress.metric.innerHTML = `<span>—</span> points`;
+            DOM.stats.progress.context.textContent = `unlock prediction to start tracking growth`;
+            
             if (DOM.stats.progress.meter) {
-                DOM.stats.progress.meter.style.setProperty('--fill', `${percentCalibrated}%`);
-                DOM.stats.progress.meter.style.opacity = "1.0";
+                DOM.stats.progress.meter.hidden = true;
             }
 
         } else if (data.confidence < 0.66) {
             
-            // --- STATE 2: Sensitive Straight-Mapping (33% - 66%) ---
-            // Distance switches back to standard milestone tracking
-            DOM.stats.distance.value.textContent = `~${data.distance.questionsLeft}`;
-            DOM.stats.distance.context.textContent = `left to reach ${data.distance.nextMilestone}`;
-
-            // Score is mapped but dimmed
-            DOM.stats.predicted.value.textContent = data.predicted;
-            DOM.stats.predicted.value.style.opacity = "0.4";
-            DOM.stats.predicted.context.textContent = `Engine highly sensitive. Keep practicing.`;
+            // --- STATE 2: Sensitive Straight-Mapping ---
             
-            // Progress is mapped but dimmed
-            DOM.stats.progress.value.textContent = `+${data.progress.points}`;
-            DOM.stats.progress.value.style.opacity = "0.4";
-            DOM.stats.progress.context.textContent = `Estimated points gained`;
+            // DISTANCE: Manually calculate questions left to 0.66 threshold (76 total questions)
+            const questionsLeft = Math.max(1, Math.round(76 * (0.66 - data.confidence)));
+            DOM.stats.distance.metric.innerHTML = `<span>~${questionsLeft}</span> questions`;
+            DOM.stats.distance.context.textContent = `left to lock in confidence`;
 
-            // Meters map to actual scale, but visually dimmed to match text
+            // PREDICTED: Restores standard format
+            DOM.stats.predicted.metric.innerHTML = `<span>${data.predicted}</span> / 180`;
+            DOM.stats.predicted.context.textContent = `prediction may fluctuate`;
+            
             if (DOM.stats.predicted.meter) {
                 const predictedPercent = ((data.predicted - 120) / (180 - 120)) * 100;
                 DOM.stats.predicted.meter.style.setProperty('--fill', `${Math.min(100, Math.max(0, predictedPercent))}%`);
-                DOM.stats.predicted.meter.style.opacity = "0.4";
             }
+            
+            // PROGRESS: Unhides and restores standard format
+            DOM.stats.progress.metric.innerHTML = `<span>+${data.progress.points}</span> points`;
+            DOM.stats.progress.context.textContent = `estimated growth so far`;
+            
             if (DOM.stats.progress.meter) {
+                DOM.stats.progress.meter.hidden = false;
                 const totalPossibleGain = 180 - baseline;
                 const progressPercent = totalPossibleGain > 0 ? (data.progress.points / totalPossibleGain) * 100 : 0;
                 DOM.stats.progress.meter.style.setProperty('--fill', `${Math.min(100, Math.max(0, progressPercent))}%`);
-                DOM.stats.progress.meter.style.opacity = "0.4";
             }
 
         } else {
             
-            // --- STATE 3: Locked Anchor (66%+) ---
-            DOM.stats.distance.value.textContent = `~${data.distance.questionsLeft}`;
-            DOM.stats.distance.context.textContent = `left to reach ${data.distance.nextMilestone}`;
-
-            // Metrics reach full opacity
-            DOM.stats.predicted.value.textContent = data.predicted;
-            DOM.stats.predicted.value.style.opacity = "1.0"; 
-            DOM.stats.predicted.context.textContent = `Confidence threshold reached. Started at ${baseline}.`;
+            // --- STATE 3: Locked Anchor ---
             
-            DOM.stats.progress.value.textContent = `+${data.progress.points}`;
-            DOM.stats.progress.value.style.opacity = "1.0";
-            DOM.stats.progress.context.textContent = `Points since baseline`;
+            // DISTANCE: Engine is confident, hand control back to the API for standard milestones
+            DOM.stats.distance.metric.innerHTML = `<span>~${data.distance.questionsLeft}</span> questions`;
+            DOM.stats.distance.context.textContent = `left to reach ${data.distance.nextMilestone.toLowerCase()}`;
 
-            // Meters map to actual scale, full opacity
+            // PREDICTED: Standard format
+            DOM.stats.predicted.metric.innerHTML = `<span>${data.predicted}</span> / 180`;
+            DOM.stats.predicted.context.textContent = `started at ${baseline}`;
+            
             if (DOM.stats.predicted.meter) {
                 const predictedPercent = ((data.predicted - 120) / (180 - 120)) * 100;
                 DOM.stats.predicted.meter.style.setProperty('--fill', `${Math.min(100, Math.max(0, predictedPercent))}%`);
-                DOM.stats.predicted.meter.style.opacity = "1.0";
             }
+            
+            // PROGRESS: Standard format
+            DOM.stats.progress.metric.innerHTML = `<span>+${data.progress.points}</span> points`;
+            DOM.stats.progress.context.textContent = `since you started`;
+            
             if (DOM.stats.progress.meter) {
+                DOM.stats.progress.meter.hidden = false;
                 const totalPossibleGain = 180 - baseline;
                 const progressPercent = totalPossibleGain > 0 ? (data.progress.points / totalPossibleGain) * 100 : 0;
                 DOM.stats.progress.meter.style.setProperty('--fill', `${Math.min(100, Math.max(0, progressPercent))}%`);
-                DOM.stats.progress.meter.style.opacity = "1.0";
             }
         }
 
@@ -156,5 +160,21 @@ async function score() {
     }
 }
 
+async function account() {
+    DOM.name.textContent = $.user.name.split(' ')[0];
+    if ($.subscriptions.length) return;
+
+    const response = await fetch("/api/account");
+    const { answers } = await response.json();
+
+    DOM.answers.innerText = 10 - answers;
+    DOM.subscribe.hidden = false;
+
+    if (answers >= 10) {
+        DOM.start.innerText = "🔓 Upgrade now -->";
+    }
+}
+
 dayPeriod();
 score();
+account();

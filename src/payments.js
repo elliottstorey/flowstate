@@ -1,6 +1,6 @@
 export default {
     successUrl: "/app",
-    cancelUrl: "/",
+    cancelUrl: "/app",
     products: {
         vault: {}
     },
@@ -8,8 +8,13 @@ export default {
         monthly: {
             product: "vault",
             priceId: process.env.STRIPE_PRICE_ID, // 60/month
-            trialing: ({}) => {
-                
+            trialing: async ({ db }) => {
+                const answers = (await db`
+                    SELECT * FROM answers
+                    WHERE user_id = ${user.id}
+                `).length;
+
+                return answers < 10;
             }
         }
     },

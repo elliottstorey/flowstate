@@ -7,18 +7,21 @@
 </nav>
 
 <main>
-    <div id="tutor">
+    <div id="adaptive">
         <p id="day-period">Wednesday morning</p>
         <h1 id="greeting">Welcome to flowstate!</h1>
         <!-- <p id="content">Welcome to flowstate! I am your personal tutor and I'm excited to help you reach your dream score. To get started </p> -->
-        <p id="content">Hey Elliott! Most prep courses throw random questions at you; we figure out exactly what you need. Answer your first set of questions so the flowstate engine can analyze your logic, identify your weak spots, and unlock your predicted score.</p>
+        <div id="tutor">
+            <p id="tutor-heading"><span id="dot"></span>Tutor</p>
+            <p id="content">Hey <span id="name"></span>, welcome to flowstate! My job is to handle the heavy lifting so you don't have to stress about what to study next. You have 10 free questions to test drive the engine. As you answer them, I'll start learning exactly how you think and personally guide you through your mistakes. Ready to see the difference?</p>
+        </div>
         <div id="topics" hidden>
             <span class="chip">Reading Comprehension</span>
             <span class="chip">Author's Attitude</span>
             <span class="chip">Difficulty 4</span>
         </div>
         <button id="start" class="cta" onclick="$.url += '/adaptive'" >Start practicing --></button>
-        <p class="muted">7 of 10 free questions remaining. <a style="cursor:pointer" onclick="$.subscribe('monthly')">Subscribe now!</a></p>
+        <p id="subscribe" class="muted" hidden><span id="answers">7</span> of 10 free questions remaining. <a style="cursor:pointer" onclick="$.subscribe('monthly')">Upgrade now!</a></p>
     </div>
     <div id="stats">
         <div class="stat">

@@ -70,6 +70,7 @@ async function client({ payments }) {
 		});
 
 		const data = await response.json();
+
 		if (data.url) {
 			window.location.href = data.url;
 		} else {
@@ -87,13 +88,13 @@ const routes = [
 	{
 		method: "POST",
 		pattern: new URLPattern({ pathname: "/payments/subscribe", baseURL: DUMMY_BASE }),
-		handler: async ({ db, user, body }) => {
+		handler: async ({ url, db, user, body }) => {
 			if (!user) return { status: 401, body: { error: "Unauthorized" } };
 
-			const { planKey } = await body();
-			const price = config.subscriptions[planKey]?.priceId;
+			const { subscription } = await body();
+			const price = config.subscriptions[subscription]?.priceId;
 
-			if (!price) return { status: 400, body: { error: "Invalid plan" } };
+            if (!price) return { status: 400, body: { error: "Invalid plan" } };
 
 			const customer =
 				await db`SELECT id FROM payments.customers WHERE user_id = ${user.id}`;
@@ -111,11 +112,11 @@ const routes = [
 				customer: customerId,
 				mode: "subscription",
 				line_items: [{ price, quantity: 1 }],
-				success_url: config.successUrl,
-				cancel_url: config.cancelUrl,
+			    success_url: new URL(config.successUrl, url.origin).href,
+			    cancel_url: new URL(config.cancelUrl, url.origin).href,
 			});
 
-			return { status: 200, body: { url: session.url } };
+			return { url: session.url  };
 		},
 	},
 	{
