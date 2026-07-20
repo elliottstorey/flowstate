@@ -3,6 +3,9 @@ import confetti from "https://esm.sh/canvas-confetti@1.9.3";
 import DOMPurify from "https://esm.sh/dompurify@3";
 
 const DOM = {
+	tabs: document.getElementById("tabs"),
+	tabChat: document.getElementById("tab-chat"),
+	question: document.getElementById("question"),
 	reference: document.getElementById("reference"),
 	passage: document.getElementById("passage"),
 	problem: document.getElementById("problem"),
@@ -11,7 +14,6 @@ const DOM = {
 	stem: document.getElementById("stem"),
 	choices: document.getElementById("choices"),
 	choiceButtons: document.querySelectorAll(".choice"),
-	rationales: document.querySelectorAll(".rationale"),
 	next: document.getElementById("next"),
 	chat: document.getElementById("chat"),
 	messages: document.getElementById("messages"),
@@ -24,12 +26,19 @@ let answerId = null;
 let questions = 0;
 
 DOM.next.addEventListener("click", next);
+
 DOM.choices.addEventListener("click", (event) => {
 	const choice = event.target.closest(".choice");
 	if (!choice || !questionId || answerId) return;
-	const selectedChoice = choice.id;
-	answer(selectedChoice);
+	answer(choice.id);
 });
+
+DOM.tabs.addEventListener("click", (event) => {
+	const button = event.target.closest("button");
+	if (!button) return;
+	setTab(button.dataset.tab);
+});
+
 DOM.chatInput.addEventListener("keydown", (event) => {
 	const content = DOM.chatInput.value.trim();
 	if (event.key != "Enter" || content == "") return;
@@ -37,21 +46,32 @@ DOM.chatInput.addEventListener("keydown", (event) => {
 	chat(content);
 });
 
+function setTab(tab) {
+	DOM.tabs.querySelectorAll("button").forEach((b) =>
+		b.classList.toggle("active", b.dataset.tab === tab)
+	);
+	DOM.reference.classList.toggle("tab-off", tab !== "reference");
+	DOM.problem.classList.toggle("tab-off", tab !== "problem");
+	DOM.chat.classList.toggle("tab-off", tab !== "chat");
+	DOM.question.classList.toggle("tab-off", tab === "chat");
+}
+
 async function next() {
 	questionId = null;
 	answerId = null;
 
 	DOM.next.disabled = true;
 	DOM.chat.hidden = true;
+	DOM.tabChat.hidden = true;
 	DOM.messages.innerHTML = "";
 
 	const accountResponse = await fetch("/api/account");
 	const { answers } = await accountResponse.json();
 
-    if (answers >= 10 && !$.subscriptions.length) {
-        $.url = "/app";
-        return;
-    }
+	if (answers >= 10 && !$.subscriptions.length) {
+		$.url = "/app";
+		return;
+	}
 
 	const response = await fetch(`/api/questions/next`);
 	const data = await response.json();
@@ -62,14 +82,18 @@ async function next() {
 
 	DOM.problemHeading.innerText = `${question.type} • Question ${questions} of ♾️`;
 
-	if (question.type == "Logical Reasoning") {
-		DOM.reference.hidden = true;
-		DOM.stimulus.hidden = false;
-		DOM.stimulus.textContent = question.stimulus;
-	} else if (question.type == "Reading Comprehension") {
-		DOM.reference.hidden = false;
-		DOM.stimulus.hidden = true;
+	const isRC = question.type == "Reading Comprehension";
+	DOM.tabs.hidden = false;
+	DOM.tabs.querySelector('[data-tab="reference"]').hidden = !isRC;
+	DOM.reference.hidden = !isRC;
+	DOM.stimulus.hidden = isRC;
+
+	setTab("problem");
+
+	if (isRC) {
 		DOM.passage.textContent = question.passage;
+	} else {
+		DOM.stimulus.textContent = question.stimulus;
 	}
 
 	DOM.stem.textContent = question.stem;
@@ -96,27 +120,21 @@ async function answer(selectedChoice) {
 	});
 
 	const data = await response.json();
-
 	answerId = data.answerId;
 
 	DOM.problemHeading.innerText = `${question.type} • Question ${questions} of ♾️ • ${question.subtype} • Difficulty ${question.difficulty}`;
 
-	// data.choices.forEach(choice => {
-	//     const button = document.getElementById(choice.letter);
-	//     button.querySelector(".rationale").textContent = choice.rationale;
-	//     button.querySelector(".rationale").hidden = false;
-	// });
-
 	DOM.chat.hidden = false;
+	DOM.tabChat.hidden = false;
+
 	if (data.correct) {
 		document.getElementById(selectedChoice).classList.add("correct");
 		confetti();
 		DOM.next.disabled = false;
 	} else {
 		document.getElementById(selectedChoice).classList.add("incorrect");
-		chat(
-			`I picked ${selectedChoice}. Can you help me understand why this is wrong?`,
-		);
+		setTab("chat");
+		chat(`I picked ${selectedChoice}. Can you help me understand why this is wrong?`);
 	}
 }
 
@@ -127,7 +145,6 @@ async function chat(content) {
 	userMessage.className = "user";
 	userMessage.textContent = content;
 	DOM.messages.appendChild(userMessage);
-
 	DOM.messages.scrollTop = DOM.messages.scrollHeight;
 
 	const response = await fetch(`/api/answers/${answerId}/messages`, {
