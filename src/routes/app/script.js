@@ -167,7 +167,7 @@ async function account() {
     const response = await fetch("/api/account");
     const { answers } = await response.json();
 
-    DOM.answers.innerText = 10 - answers;
+    DOM.answers.innerText = Math.max(0, 10 - answers);
     DOM.subscribe.hidden = false;
 
     if (answers >= 10) {
