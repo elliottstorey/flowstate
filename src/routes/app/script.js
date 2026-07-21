@@ -81,7 +81,7 @@ async function score() {
             DOM.stats.distance.context.textContent = `left to unlock your score`;
 
             // PREDICTED: Em-dash format
-            DOM.stats.predicted.metric.innerHTML = `<span>—</span> / 180`;
+            DOM.stats.predicted.metric.innerHTML = `<span>🔒</span> / 180`;
             DOM.stats.predicted.context.textContent = `~${questionsLeft} questions to unlock prediction`;
             
             if (DOM.stats.predicted.meter) {
@@ -90,7 +90,7 @@ async function score() {
             }
 
             // PROGRESS: Em-dash format
-            DOM.stats.progress.metric.innerHTML = `<span>—</span> points`;
+            DOM.stats.progress.metric.innerHTML = `<span>🔒</span> points`;
             DOM.stats.progress.context.textContent = `unlock prediction to start tracking growth`;
             
             if (DOM.stats.progress.meter) {
