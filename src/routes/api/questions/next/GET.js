@@ -9,8 +9,11 @@ async function handler({ db, user }) {
         FROM answers a
         JOIN questions q ON a.question_id = q.id
         WHERE a.user_id = ${user.id} AND a.reviewed = false
+        ORDER BY a.answered_at DESC  /* FIX: Prioritize newest mistakes */
         LIMIT 1;
     `;
+
+    console.log(unreviewedAnswer)
 
     if (unreviewedAnswer) {
         // Set the target question to the one they need to review
@@ -61,6 +64,7 @@ async function handler({ db, user }) {
             SELECT id FROM questions
             WHERE subtype = ${nextSubtype} 
               AND id NOT IN (SELECT question_id FROM answers WHERE user_id = ${user.id})
+            ORDER BY RANDOM() /* FIX: Shuffle the pool of remaining questions */
             LIMIT 1;
         `;
 
