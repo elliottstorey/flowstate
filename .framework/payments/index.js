@@ -51,6 +51,7 @@ async function server({ url, user, db, redirect }) {
 			customer: customerId,
 			mode: "subscription",
 			line_items: [{ price, quantity: 1 }],
+            allow_promotion_codes: true,
 			success_url: new URL(config.successUrl, url.origin).href,
 			cancel_url: new URL(config.cancelUrl, url.origin).href,
 		});
@@ -112,6 +113,7 @@ const routes = [
 				customer: customerId,
 				mode: "subscription",
 				line_items: [{ price, quantity: 1 }],
+                allow_promotion_codes: true,
 			    success_url: new URL(config.successUrl, url.origin).href,
 			    cancel_url: new URL(config.cancelUrl, url.origin).href,
 			});
