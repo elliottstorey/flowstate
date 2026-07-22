@@ -1,0 +1,82 @@
+<span></span>
+
+<style>
+:host { display: contents; }
+
+span {
+  /* Default Dimensions & Timings */
+  --size: 1.35rem;
+  --duration: 20s;
+
+  /* Color Palette (OKLCH) */
+  --bg: oklch(95% 0.02 264.695);
+  --c1: oklch(75% 0.15 350);
+  --c2: oklch(80% 0.12 200);
+  --c3: oklch(78% 0.14 280);
+
+  /* Derived Calculations */
+  --blur: calc(var(--size) * 0.015);
+  --dot: calc(var(--size) * 0.008);
+  --shadow: calc(var(--size) * 0.008);
+
+  /* Base Layout */
+  width: var(--size);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  position: relative;
+  overflow: hidden;
+  display: inline-grid;
+  vertical-align: middle;
+  grid-template-areas: "stack";
+  flex-shrink: 0;
+
+  /* Force a dedicated GPU layer */
+  transform: translateZ(0); 
+  will-change: transform, filter;
+
+  /* Native CSS Nesting for Pseudo-elements */
+  &::before,
+  &::after {
+    content: "";
+    grid-area: stack;
+    border-radius: inherit;
+    width: 100%;
+    height: 100%;
+  }
+
+  &::before {
+    background: 
+      conic-gradient(from calc(var(--angle) *  2) at 25% 70%, var(--c3), transparent 20% 80%, var(--c3)),
+      conic-gradient(from calc(var(--angle) *  2) at 45% 75%, var(--c2), transparent 30% 60%, var(--c2)),
+      conic-gradient(from calc(var(--angle) * -3) at 80% 20%, var(--c1), transparent 40% 60%, var(--c1)),
+      conic-gradient(from calc(var(--angle) *  2) at 15%  5%, var(--c2), transparent 10% 90%, var(--c2)),
+      conic-gradient(from calc(var(--angle) *  1) at 20% 80%, var(--c1), transparent 10% 90%, var(--c1)),
+      conic-gradient(from calc(var(--angle) * -2) at 85% 10%, var(--c3), transparent 20% 80%, var(--c3));
+    
+    box-shadow: inset var(--bg) 0 0 var(--shadow) calc(var(--shadow) * 0.2);
+    filter: blur(var(--blur)) contrast(1.5);
+    animation: rotate var(--duration) linear infinite;
+  }
+
+  &::after {
+    background-image: radial-gradient(circle at center, var(--bg) var(--dot), transparent var(--dot));
+    background-size: calc(var(--dot) * 2) calc(var(--dot) * 2);
+    backdrop-filter: blur(calc(var(--blur) * 2)) contrast(3);
+    mix-blend-mode: overlay;
+    mask-image: radial-gradient(black 15%, transparent 75%);
+  }
+
+  /* Accessibility / Reduced Motion */
+  @media (prefers-reduced-motion: reduce) {
+    &::before {
+      animation: none;
+    }
+  }
+}
+
+@keyframes rotate {
+  to {
+    --angle: 360deg;
+  }
+}
+</style>

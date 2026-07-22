@@ -158,9 +158,12 @@ main > div {
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    border: 2px dashed var(--ui);
-    padding: clamp(1rem, 3vw, 1.5rem);
     border-radius: 0.5rem;
+}
+
+#lessons {
+        border: 2px dashed var(--ui);
+    padding: clamp(1rem, 3vw, 1.5rem);
 }
 
 h3 {

@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import fsp from "node:fs/promises";
 import { createServer } from "node:http";
+import path from "node:path";
 import { JSDOM } from "jsdom";
 import mime from "mime-types";
 import serialize from "serialize-javascript";
@@ -17,6 +18,24 @@ async function renderHtml(layouts, file, clientState) {
 		document.querySelectorAll("slot").forEach((slot) => {
 			slot.outerHTML = content;
 		});
+	}
+
+	const customElements = Array.from(document.querySelectorAll("*")).filter(
+		(el) => el.tagName.includes("-"),
+	);
+
+	for (const el of customElements) {
+		const tagName = el.tagName.toLowerCase();
+		try {
+			const componentPath = path.join(
+				process.cwd(),
+				"src",
+				"components",
+				`${tagName}.html`,
+			);
+			const componentContent = await fsp.readFile(componentPath, "utf-8");
+			el.innerHTML = `<template shadowrootmode="open">${componentContent}</template>`;
+		} catch (err) {}
 	}
 
 	const head = document.head;
@@ -46,10 +65,8 @@ async function renderHtml(layouts, file, clientState) {
 class Server {
 	constructor(router, port, host = "0.0.0.0", features = []) {
 		this.router = router;
-
 		this.port = port;
 		this.host = host;
-
 		this.features = features;
 
 		this.http = createServer((request, response) =>

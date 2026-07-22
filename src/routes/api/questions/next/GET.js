@@ -13,8 +13,6 @@ async function handler({ db, user }) {
         LIMIT 1;
     `;
 
-    console.log(unreviewedAnswer)
-
     if (unreviewedAnswer) {
         // Set the target question to the one they need to review
         targetQuestionId = unreviewedAnswer.question_id;

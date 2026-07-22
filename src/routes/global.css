@@ -28,6 +28,12 @@
     --ma-2: hsl(329, 54%, 59%);
 }
 
+@property --angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
 * {
     margin: 0;
     padding: 0;
