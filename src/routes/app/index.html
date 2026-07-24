@@ -12,7 +12,7 @@
         <h1 id="greeting">Welcome to flowstate!</h1>
         <div id="tutor">
             <p id="tutor-heading"><tutor-orb></tutor-orb>Tutor</p>
-            <p id="content">Hey <span id="name"></span>, welcome to flowstate! My job is to handle the heavy lifting so you don't have to stress about what to study next. You have 10 free questions to test drive the engine. As you answer them, I'll start learning exactly how you think and personally guide you through your mistakes. Ready to see the difference?</p>
+            <p id="content">Hey <span id="name"></span>, welcome to flowstate! My job is to handle the heavy lifting so you don't have to stress about what to study next. You have 100 free questions & 10 free tutor messages to test drive the engine. As you answer each question, I'll start learning exactly how you think and personally guide you through your mistakes. Ready to see the difference?</p>
         </div>
         <div id="topics" hidden>
             <span class="chip">Reading Comprehension</span>
@@ -25,25 +25,25 @@
     <div id="stats">
         <div class="stat">
             <p class="title">Predicted Score</p>
-            <p class="metric"><span>152</span> / 180</p>
+            <p class="metric"><span id="predicted">152</span> / 180</p>
             <div id="predicted-meter" class="meter"></div>
-            <p class="context">Started at 130</p>
+            <p id="predicted-context" class="context">started at 130</p>
         </div>
         <div class="stat">
             <p class="title">Progress</p>
-            <p class="metric"><span>+22</span> points</p>
+            <p class="metric"><span>+</span><span id="progress">22</span> points</p>
             <div id="progress-meter" class="meter"></div>
-            <p class="context">since you started</p>
+            <p id="progress-context" class="context">since you started</p>
         </div>
         <div class="stat">
             <p class="title">Velocity</p>
-            <p class="metric"><span>+8</span> points/week</p>
-            <p class="context">up from +5 last week</p>
+            <p class="metric"><span>+</span><span id="velocity">8</span> questions/week</p>
+            <p id="velocity-context" class="context">up from +5 last week</p>
         </div>
         <div class="stat">
             <p class="title">Distance</p>
-            <p class="metric"><span>~220</span> questions</p>
-            <p class="context">left to reach the next milestone</p>
+            <p class="metric"><span>~</span><span id="distance">220</span> questions</p>
+            <p id="distance-context" class="context">left to reach the next milestone</p>
         </div>
     </div>
     <div id="tests">
@@ -51,43 +51,42 @@
         <div>
             <div class="test">
                 <div class="overview">
-                    <p class="title">Practice Test 1</p>
+                    <p class="title">Practice test 1</p>
                     <p class="date">Oct 3</p>
                     <p class="description">Baseline -- LR and RC both needed work</p>
                 </div>
                 <div class="details">
                     <p class="score">130</p>
-                    <p class="delta">baseline</p>
                 </div>
             </div>
             <div class="test">
                 <div class="overview">
-                    <p class="title">Practice Test 2</p>
+                    <p class="title">Practice test 2</p>
                     <p class="date">Oct 14</p>
                     <p class="description">LR improved significantly. RC timing still an issue</p>
                 </div>
                 <div class="details">
-                    <p class="score">155</p>
                     <p class="delta">+25</p>
+                    <p class="score">155</p>
                 </div>
             </div>
             <div class="test">
                 <div class="overview">
-                    <p class="title">Practice Test 3</p>
+                    <p class="title">Practice test 3</p>
                     <p class="date">Oct 28</p>
                     <p class="description">RC improving. Double passages still the weak point</p>
                 </div>
                 <div class="details">
-                    <p class="score">160</p>
                     <p class="delta">+5</p>
+                    <p class="score">160</p>
                 </div>
             </div>
         </div>
         <button id="new-exam">New practice exam</button>
     </div>
-    <div id="lessons" style="border: 2px dashed var(--ui);">
-        <h3>Lessons (Coming Soon)</h3>
-        <!-- <div class="section">
+    <div id="lessons">
+        <h3>Lessons</h3>
+        <div class="section">
             <h4>Logical reasoning</h4>
             <div class="topic">
                 <p>Conclusions & disputes</p>
@@ -156,6 +155,6 @@
                 <p>Meaning in context</p>
                 <p class="chip">Not started</p>
             </div>
-        </div> -->
+        </div>
     </div>
 </main>

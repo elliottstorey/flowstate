@@ -120,8 +120,14 @@ main > div {
     min-width: min(100%, 20ch);
 }
 
+
 .stat .title, .stat .metric {
     color: var(--tx-2);
+}
+
+#predicted.hidden {
+    filter: blur(7px);
+    user-select: none;
 }
 
 .stat .metric span {
@@ -144,13 +150,13 @@ main > div {
     left: 0;
     bottom: 0;
     width: var(--fill, 0%); 
-    background: var(--bl);
+    background: var(--primary);
     border-radius: 12px;
     transition: width 0.3s ease;
 }
 
 .stat .context {
-    font-size: 0.9rem;
+    font-size: 1rem;
     color: var(--tx-3);
 }
 
@@ -158,12 +164,12 @@ main > div {
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    border-radius: 0.5rem;
 }
 
-#lessons {
-        border: 2px dashed var(--ui);
-    padding: clamp(1rem, 3vw, 1.5rem);
+#tests > div {
+    display: flex;
+    flex-direction: column;
+    gap:1rem;
 }
 
 h3 {
@@ -194,7 +200,7 @@ h3 {
 
 .test .overview .date {
     color: var(--tx-3);
-    font-size: 0.9rem;
+    font-size: 1rem;
 }
 
 .test .overview .description {

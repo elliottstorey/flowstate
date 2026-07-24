@@ -4,100 +4,77 @@ const DOM = {
     start: document.getElementById("start"),
     subscribe: document.getElementById("subscribe"),
     answers: document.getElementById("answers"),
-    stats: {
-        predicted: {
-            metric: document.querySelector('.stat:nth-child(1) .metric'),
-            context: document.querySelector('.stat:nth-child(1) .context'),
-            meter: document.getElementById('predicted-meter')
-        },
-        progress: {
-            metric: document.querySelector('.stat:nth-child(2) .metric'),
-            context: document.querySelector('.stat:nth-child(2) .context'),
-            meter: document.getElementById('progress-meter')
-        },
-        velocity: {
-            metric: document.querySelector('.stat:nth-child(3) .metric'),
-            context: document.querySelector('.stat:nth-child(3) .context')
-        },
-        distance: {
-            metric: document.querySelector('.stat:nth-child(4) .metric'),
-            context: document.querySelector('.stat:nth-child(4) .context')
-        }
-    }
+    predicted: document.getElementById("predicted"),
+    predictedMeter: document.getElementById("predicted-meter"),
+    predictedContext: document.getElementById("predicted-context"),
+    progress: document.getElementById("progress"),
+    progressMeter: document.getElementById("progress-meter"),
+    progressContext: document.getElementById("progress-context"),
+    velocity: document.getElementById("velocity"),
+    velocityContext: document.getElementById("velocity-context"),
+    distance: document.getElementById("distance"),
+    distanceContext: document.getElementById("distance-context")
 };
 
 function dayPeriod() {
-    const h = new Date().getHours();
-    const period = h < 12 ? 'morning' : h < 17 ? 'afternoon' : h < 21 ? 'evening' : 'night';
-    DOM.dayPeriod.textContent = `${new Intl.DateTimeFormat('en-US', { weekday: 'long' }).format()} ${period}`;
+    const hours = new Date().getHours();
+    const period = hours < 12 ? "morning" : hours < 17 ? "afternoon" : hours < 21 ? "evening" : "night";
+    DOM.dayPeriod.textContent = `${new Intl.DateTimeFormat("en-US", { weekday: "long" }).format()} ${period}`;
 }
 
-async function score() {
-    try {
-        const response = await fetch("/api/predictions");
-        if (!response.ok) return;
+async function predictions() {
+    const setFill = (element, percentage) => element?.style.setProperty("--fill", `${Math.max(0, Math.min(100, percentage))}%`);
 
-        const { predicted, confidence, baseline, questions, milestone } = await response.json();
-        const { predicted: p, progress: pr, velocity: v, distance: d } = DOM.stats;
+    const response = await fetch("/api/predictions");
+    if (!response.ok) return;
 
-        // --- 1. VELOCITY (Always standard) ---
-        const { currWeek, prevWeek } = questions;
-        const vTrend = currWeek > prevWeek ? 'up from' : currWeek < prevWeek ? 'down from' : 'even with';
-        
-        v.metric.innerHTML = `<span>${currWeek}</span> questions/week`;
-        v.context.textContent = `${vTrend} ${prevWeek} last week`;
+    const { predicted, confidence, baseline, questions, milestone } = await response.json();
 
-        // --- 2. DYNAMIC STATE MACHINE ---
-        const setFill = (el, pct) => el?.style.setProperty('--fill', `${Math.max(0, Math.min(100, pct))}%`);
-        const TOTAL_QS = 76; 
+    // predicted
 
-        if (confidence < 0.5) {
-            // STATE 1: Calibrating (< 50%)
-            const qLeft = Math.max(1, Math.round(TOTAL_QS * (0.5 - confidence)));
-            
-            p.metric.innerHTML = `<span>🔒</span> / 180`;
-            p.context.textContent = `~${qLeft} questions to unlock prediction`;
-            setFill(p.meter, (confidence / 0.5) * 100);
+    const predictedMeter = (predicted - 120) / (180 - 120) * 100;
+    DOM.predicted.innerText = `${predicted}`;
+    setFill(DOM.predictedMeter, predictedMeter);
+    DOM.predictedContext.innerText = `started at ${baseline}`;
 
-            pr.metric.innerHTML = `<span>+0</span> points`;
-            pr.context.textContent = `unlock prediction to start tracking progress`;
-            if (pr.meter) pr.meter.hidden = true;
+    // progress
 
-            d.metric.innerHTML = `<span>~${qLeft}</span> questions`;
-            d.context.textContent = `remaining to unlock your score`;
+    const progress = predicted - baseline;
+    const progressMeter = (predicted - baseline) / (180 - baseline) * 100;
+    DOM.progress.innerText = `${progress}`;
+    setFill(DOM.progressMeter, progressMeter);
+    DOM.progressContext.innerText = `since you started`;
 
-        } else {
-            // SHARED LOGIC: > 50% and 100% 
-            const points = Math.max(0, predicted - baseline);
+    // velocity
 
-            p.metric.innerHTML = `<span>${predicted}</span> / 180`;
-            setFill(p.meter, ((predicted - 120) / 60) * 100);
+    const { currWeek, prevWeek } = questions;
+    const trend = currWeek > prevWeek ? "up from" : currWeek < prevWeek ? "down from" : "even with";
+    DOM.velocity.innerText = `${questions.currWeek}`;
+    DOM.velocityContext.innerText = `${trend} +${prevWeek} last week`;
 
-            pr.metric.innerHTML = `<span>+${points}</span> points`;
-            pr.context.textContent = `since you started`;
-            
-            if (pr.meter) {
-                pr.meter.hidden = false;
-                setFill(pr.meter, ((predicted - baseline) / (180 - baseline)) * 100 || 0);
-            }
+    // distance
 
-            if (confidence < 1) {
-                // STATE 2: Calibrated but Unlocked (50% - 99%)
-                const qLeft = Math.max(1, Math.round(TOTAL_QS * (1 - confidence)));
-                
-                p.context.textContent = `~${qLeft} questions to reach high confidence`;
-                d.metric.innerHTML = `<span>~${qLeft}</span> questions`;
-                d.context.textContent = `remaining to reach high confidence`;
+    const { score, questionsRemaining } = milestone;
+    DOM.distance.innerText = `${questionsRemaining}`;
+    DOM.distanceContext.innerText = `remaining to reach ${score}`;
 
-            } else {
-                // STATE 3: Fully Locked In (100%)
-                p.context.textContent = `started at ${baseline}`;
-                d.metric.innerHTML = `<span>~${milestone.questionsRemaining}</span> questions`;
-                d.context.textContent = `left to reach ${milestone.score}`;
-            }
-        }
-    } catch (error) {
-        console.error("Error updating dashboard:", error);
+    // non-confident stats
+
+    if (confidence < 0.5) {
+        const questions = Math.ceil(76 * (0.5 - confidence));
+        const progress = (confidence / 0.5) * 100;
+        DOM.predicted.classList.add("hidden");
+        setFill(DOM.predictedMeter, progress);
+        DOM.predictedContext.innerText = `~${questions} questions to unlock initial prediction`;
+        DOM.distance.innerText = `${questions}`;
+        DOM.distanceContext.innerText = `remaining to unlock initial prediction`;
+    } else if (confidence < 1) {
+        const questions = Math.ceil(76 * (1 - confidence));
+        const progress = ((confidence - 0.5) / 0.5) * 100;
+        setFill(DOM.predictedMeter, progress);
+        DOM.predictedContext.innerText = `~${questions} questions to reach full confidence`;
+        DOM.distance.innerText = `${questions}`;
+        DOM.distanceContext.innerText = `remaining to reach full confidence`;
     }
 }
 
@@ -114,5 +91,5 @@ async function account() {
 }
 
 dayPeriod();
-score();
+predictions();
 account();
