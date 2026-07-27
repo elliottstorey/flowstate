@@ -130,8 +130,9 @@ nav h2 {
 }
 
 .choice .letter {
-    margin-right: 0.25rem;
-    font-weight: 500;
+    margin-right: 0.5rem;
+    font-weight: bold;
+	color: var(--tx-2);
 }
 
 .choice .rationale {
