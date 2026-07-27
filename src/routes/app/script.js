@@ -19,7 +19,7 @@ const DOM = {
 function dayPeriod() {
     const hours = new Date().getHours();
     const period = hours < 12 ? "morning" : hours < 17 ? "afternoon" : hours < 21 ? "evening" : "night";
-    DOM.dayPeriod.textContent = `${new Intl.DateTimeFormat("en-US", { weekday: "long" }).format()} ${period}`;
+    DOM.dayPeriod.textContent = `${new Intl.DateTimeFormat("en-US", { weekday: "long" }).format(new Date())} ${period}`;
 }
 
 async function predictions() {
