@@ -84,7 +84,7 @@ async function handler({ db, user, payments, model, params, body }) {
 	});
 
 	// Fallback just in case the model only called the tool and returned no text
-	const finalContent =
+	let finalContent =
 		text ||
 		(reviewed
 			? "Great job! You've got it. Let's move on to the next one."
@@ -96,7 +96,18 @@ async function handler({ db, user, payments, model, params, body }) {
         values (${user.id}, ${id}, 'assistant', ${finalContent});
     `;
 
-    if (!payments.features.messages) reviewed = true
+    if (payments.features.messages <= 0 && !reviewed) {
+        await db`
+            update answers
+            set reviewed = true
+            where id = ${id}
+        `;
+        reviewed = true;
+        
+        // Optional UX improvement: Append a note so they aren't confused 
+        // why the AI suddenly stopped tutoring and revealed the answer.
+        finalContent += "\n\n*(Note: You are out of messages! The correct answer has been revealed so you can move on.)*";
+    }
 
 	return {
 		content: finalContent,

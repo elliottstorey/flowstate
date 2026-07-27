@@ -18,7 +18,7 @@ export default async function handler({ db, user, payments, params, body }) {
 
     return {
         id: answer.id,
-        answer: question.answer,
+        answer: reviewed ? question.answer : undefined,
         correct,
         reviewed
     };
