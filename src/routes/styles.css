@@ -83,7 +83,7 @@ section > div.visual { width: 100%; min-height: clamp(22rem, 40vh, 28rem); displ
 #problem, #faq, #cta { justify-content: center; text-align: left; }
 #problem > div, #faq > div { flex: 1 1 100%; max-width: 75ch; }
 
-#algorithm { flex-wrap: wrap-reverse; }
+#algorithm, #tests { flex-wrap: wrap-reverse; }
 .algorithm-wrap { width: 100%; max-width: 380px; }
 .engine-heading, .chat-heading { display: flex; align-items: center; gap: 0.5rem; font-weight: 600; color: var(--tx-2); font-size: 0.85rem; margin-bottom: 1.5rem; }
 .engine-heading .dot, .chat-heading .dot { height: 0.5rem; width: 0.5rem; border-radius: 50%; }
@@ -157,6 +157,65 @@ section > div.visual { width: 100%; min-height: clamp(22rem, 40vh, 28rem); displ
     #tutor .row .typing, #tutor .row .bubble { animation: none !important; }
     #tutor .row .typing { display: none; }
     #tutor .row .bubble { opacity: 1; }
+}
+
+/* ===== Tests: a calm, continuous simulation of steady exam pacing ===== */
+.tests-wrap { width: 100%; max-width: 380px; display: flex; flex-direction: column; gap: 1.1rem; }
+#tests .header-row { display: flex; justify-content: space-between; align-items: center; }
+#tests .pill { font-size: 0.72rem; font-weight: 600; color: var(--tx-2); border: 1px solid var(--ui-3); border-radius: 1rem; padding: 0.22rem 0.65rem; }
+#tests .mode { font-size: 0.72rem; color: var(--tx-3); }
+#tests .bar-block { display: flex; flex-direction: column; gap: 0.4rem; }
+#tests .bar-label { display: flex; justify-content: space-between; font-size: 0.72rem; color: var(--tx-3); }
+#tests .bar-track { height: 8px; border-radius: 4px; background: var(--ui); overflow: hidden; }
+#tests .bar-fill { height: 100%; width: 100%; border-radius: 4px; transform-origin: left; }
+#tests .time-fill { background: var(--tx-2); animation: timeDeplete 9s infinite; }
+#tests .q-fill { background: var(--cy-2); animation: qFill 9s infinite; }
+@keyframes timeDeplete { 0% {transform:scaleX(1);} 78%, 95% {transform:scaleX(0.04);} 100% {transform:scaleX(1);} }
+@keyframes qFill { 0% {transform:scaleX(0);} 78%, 95% {transform:scaleX(1);} 100% {transform:scaleX(0);} }
+#tests .complete { display: flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; font-weight: 600; color: var(--gr); opacity: 0; animation: completeIn 9s infinite; }
+@keyframes completeIn { 0%, 80% {opacity:0;} 84%, 95% {opacity:1;} 100% {opacity:0;} }
+
+@media (prefers-reduced-motion: reduce) {
+    #tests .time-fill, #tests .q-fill, #tests .complete { animation: none !important; }
+    #tests .time-fill { transform: scaleX(0.6); }
+    #tests .q-fill { transform: scaleX(0.4); }
+}
+
+/* ===== Lessons: a 3-beat crossfade — bloated video, compact framework, back to practice ===== */
+#lessons .screen { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 0.8rem; opacity: 0; }
+#lessons .screen > * { width: 90%; max-width: 380px; text-align: left; }
+#lessons .l3-inner { display: flex; flex-direction: column; gap: 0.8rem; width: 90%; max-width: 380px; text-align: left; }
+#lessons .screen.l1 { animation: scrL1 9s infinite; }
+#lessons .screen.l2 { animation: scrL2 9s infinite; }
+#lessons .screen.l3 { animation: scrL3 9s infinite; }
+
+@keyframes scrL1 { 0%, 2% {opacity:0;} 3%, 30% {opacity:1;} 33.3%, 100% {opacity:0;} }
+@keyframes scrL2 { 0%, 33.3% {opacity:0;} 35%, 63% {opacity:1;} 66.6%, 100% {opacity:0;} }
+@keyframes scrL3 { 0%, 66.6% {opacity:0;} 68.3%, 96% {opacity:1;} 100% {opacity:0;} }
+
+#lessons .label { font-size: 0.72rem; color: var(--tx-3); }
+#lessons .player { border: 1px solid var(--ui-3); border-radius: 0.4rem; background: var(--bg); padding: 0.9rem 1rem; display: flex; align-items: center; gap: 0.8rem; }
+#lessons .play-btn { width: 28px; height: 28px; border-radius: 50%; background: var(--ui-2); display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: var(--tx-3); font-size: 0.7rem; }
+#lessons .scrub-wrap { flex: 1; display: flex; flex-direction: column; gap: 0.3rem; }
+#lessons .scrub-track { height: 5px; border-radius: 3px; background: var(--ui); }
+#lessons .scrub-fill { height: 100%; width: 6%; border-radius: 3px; background: var(--ui-3); }
+#lessons .duration { font-size: 0.7rem; color: var(--tx-3); }
+
+#lessons .framework { border: 1px solid color-mix(in srgb, var(--cy-2) 40%, var(--ui)); border-radius: 0.5rem; background: color-mix(in srgb, var(--cy-2) 8%, var(--bg)); padding: 0.9rem 1rem; }
+#lessons .framework-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem; }
+#lessons .framework-title { font-size: 0.85rem; font-weight: 600; color: var(--tx); }
+#lessons .time-badge { font-size: 0.68rem; font-weight: 600; color: var(--cy); background: color-mix(in srgb, var(--cy-2) 16%, var(--bg)); border-radius: 1rem; padding: 0.15rem 0.55rem; }
+#lessons .framework ol { list-style: none; display: flex; flex-direction: column; gap: 0.35rem; }
+#lessons .framework li { font-size: 0.8rem; color: var(--tx-2); }
+#lessons .framework li b { color: var(--tx); }
+
+#lessons .back-label { font-size: 0.82rem; color: var(--tx-2); }
+#lessons .mini-chip { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; border: 1px solid color-mix(in srgb, var(--cy-2) 45%, var(--ui)); background: color-mix(in srgb, var(--cy-2) 10%, var(--bg)); color: var(--cy); font-weight: 500; font-size: 0.82rem; border-radius: 0.5rem; padding: 0.6rem 1rem; }
+
+@media (prefers-reduced-motion: reduce) {
+    #lessons .screen { animation: none !important; }
+    #lessons .screen.l1 { opacity: 1; }
+    #lessons .screen.l2, #lessons .screen.l3 { display: none; }
 }
 
 #faq > div { align-items: normal; }

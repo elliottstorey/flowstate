@@ -100,11 +100,15 @@ create table section_questions (
 -- 4. USER DATA
 create table answers (
     id bigint generated always as identity primary key,
-    user_id bigint null references auth.users(id) on delete cascade,
+    -- user_id changed to NOT NULL
+    user_id bigint not null references auth.users(id) on delete cascade,
     question_id bigint not null references questions(id) on delete cascade,
     selected_choice choice_letter not null,
     reviewed boolean not null default false,
-    answered_at timestamptz not null default now()
+    created_at timestamptz not null default now(),
+
+    -- Enforces that a user can only submit one answer per question
+    unique (user_id, question_id) 
 );
 
 create type message_role as enum ('user', 'assistant');

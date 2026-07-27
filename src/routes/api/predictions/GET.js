@@ -13,7 +13,7 @@ export default async function handler({ db, user }) {
         FROM answers a 
         JOIN questions q ON a.question_id = q.id 
         WHERE a.user_id = ${user.id} 
-        ORDER BY a.answered_at ASC
+        ORDER BY a.created_at ASC
     `;
 
     // 2. Initialize rolling buffers for each subtype
@@ -88,8 +88,8 @@ export default async function handler({ db, user }) {
     const [stats] = await db`
         SELECT 
             COUNT(*) as total,
-            COUNT(*) FILTER (WHERE answered_at >= NOW() - INTERVAL '7 days') as curr_week,
-            COUNT(*) FILTER (WHERE answered_at >= NOW() - INTERVAL '14 days' AND answered_at < NOW() - INTERVAL '7 days') as prev_week
+            COUNT(*) FILTER (WHERE created_at >= NOW() - INTERVAL '7 days') as curr_week,
+            COUNT(*) FILTER (WHERE created_at >= NOW() - INTERVAL '14 days' AND created_at < NOW() - INTERVAL '7 days') as prev_week
         FROM answers
         WHERE user_id = ${user.id};
     `;

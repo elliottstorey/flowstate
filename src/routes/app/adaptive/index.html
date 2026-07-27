@@ -46,8 +46,14 @@
 	</div>
 </main>
 
+<!-- Update your aside inside the HTML -->
 <aside id="chat" hidden>
-	<p id="chat-heading"><tutor-orb></tutor-orb>Tutor</p>
-	<div id="messages"></div>
-	<input id="chat-input" placeholder="Ask a question about the problem..." />
+    <div id="chat-heading">
+        <div class="tutor-title">
+            <tutor-orb></tutor-orb><span>Tutor</span>
+        </div>
+        <span id="message-counter"><span id="messages-left"></span> of 10 free messages remaining</span>
+    </div>
+    <div id="messages"></div>
+    <input id="chat-input" placeholder="Ask a question about the problem..." />
 </aside>

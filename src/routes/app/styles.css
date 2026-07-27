@@ -163,7 +163,17 @@ main > div {
 #tests, #lessons {
     display: flex;
     flex-direction: column;
+    justify-content: center; /* Centers the content vertically */
+    align-items: center;     /* Centers the content horizontally */
+    padding: 3rem 1rem;      /* Adds taller padding for a better placeholder look */
     gap: 1rem;
+    border: 3px dashed var(--ui);
+    border-radius: 0.5rem;
+}
+
+main > #tests, 
+main > #lessons {
+    flex: 1 1 100%; /* Forces the containers to expand to 100% full width */
 }
 
 #tests > div {

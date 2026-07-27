@@ -78,18 +78,20 @@ async function predictions() {
     }
 }
 
-async function account() {
-    DOM.name.textContent = $.user.name.split(' ')[0];
-    if ($.subscriptions.length) return;
+async function trial() {
+    DOM.name.textContent = $.user.name.split(" ")[0];
 
-    const { answers } = await (await fetch("/api/account")).json();
+    if ($.activeProducts.includes("monthly")) return;
 
-    DOM.answers.innerText = Math.max(0, 10 - answers);
+    DOM.answers.innerText = $.features.questions;
     DOM.subscribe.hidden = false;
 
-    if (answers >= 10) DOM.start.innerText = "🔓 Upgrade now -->";
+    if (!$.features.questions) {
+        DOM.start.innerText = "🔓 Upgrade now -->";
+        DOM.start.onclick = () => $.subscribe("monthly");
+    }
 }
 
 dayPeriod();
 predictions();
-account();
+trial();
