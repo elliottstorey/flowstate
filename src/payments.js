@@ -24,7 +24,7 @@ export default {
             default: true,
             features: {
                 questions: 100,
-                messages: 10
+                messages: 25
             }
         },
         monthly: {
