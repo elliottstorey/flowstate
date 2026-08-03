@@ -37,7 +37,7 @@ class Router {
         });
 
         const pathname = path.posix.join("/", ...segments);
-        
+
         return {
             pattern: new URLPattern({ pathname, baseURL: DUMMY_BASE }),
             pathname
@@ -95,14 +95,19 @@ class Router {
         }
 
         // Sort routes by specificity so static routes evaluate before dynamic ones
+        // Sort routes by specificity so static routes evaluate before dynamic ones
         this.routes.sort((a, b) => {
             const aSegs = a.pathname.split('/');
             const bSegs = b.pathname.split('/');
             const len = Math.max(aSegs.length, bSegs.length);
 
             for (let i = 0; i < len; i++) {
-                const aSeg = aSegs[i] || '';
-                const bSeg = bSegs[i] || '';
+                const aSeg = aSegs[i];
+                const bSeg = bSegs[i];
+
+                // If one route runs out of segments first, the shorter/exact route takes precedence
+                if (aSeg === undefined) return -1;
+                if (bSeg === undefined) return 1;
 
                 // Catch-all (*) falls to the bottom
                 const aIsCatchAll = aSeg.includes('*');
@@ -111,15 +116,19 @@ class Router {
                 if (!aIsCatchAll && bIsCatchAll) return -1;
 
                 // Dynamic (:) falls below static segments
-                const aIsDynamic = aSeg.includes(':');
-                const bIsDynamic = bSeg.includes(':');
+                const aIsDynamic = aSeg.startsWith(':');
+                const bIsDynamic = bSeg.startsWith(':');
                 if (aIsDynamic && !bIsDynamic) return 1;
                 if (!aIsDynamic && bIsDynamic) return -1;
 
-                // Sort alphabetically if they are the same type to keep it deterministic
-                if (aSeg !== bSeg) return aSeg.localeCompare(bSeg);
+                // Note: Do NOT sort alphabetically here if it overrides static vs dynamic priority
             }
-            return 0;
+
+            // Secondary sort: More total static segments wins over fewer
+            const aStaticCount = aSegs.filter(s => !s.startsWith(':') && !s.includes('*')).length;
+            const bStaticCount = bSegs.filter(s => !s.startsWith(':') && !s.includes('*')).length;
+
+            return bStaticCount - aStaticCount;
         });
 
         return this.routes;
@@ -128,15 +137,15 @@ class Router {
     route(method, url) {
         const pathOnly = url.split('?')[0];
 
-        const route = this.routes.find(route => 
+        const route = this.routes.find(route =>
             route.method == method && route.pattern.test(pathOnly, DUMMY_BASE)
         );
-        
+
         if (!route) return null;
 
-        return { 
-            ...route, 
-            params: route.pattern.exec(pathOnly, DUMMY_BASE).pathname.groups 
+        return {
+            ...route,
+            params: route.pattern.exec(pathOnly, DUMMY_BASE).pathname.groups
         };
     }
 }

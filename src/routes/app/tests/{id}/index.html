@@ -1,0 +1,46 @@
+<link rel="stylesheet" href="1/styles.css">
+<script src="1/script.js" type="module" defer></script>
+
+<main>
+    <nav>
+        <h2 onclick="$.url = '/app'">flowstate</h2>
+    </nav>
+    <div id="tabs" hidden>
+        <button data-tab="reference" hidden>Passage</button>
+        <button data-tab="problem" class="active">Question</button>
+    </div>
+    <div id="question">
+        <div id="reference" hidden>
+            <p id="passage-heading">Passage</p>
+            <p id="passage"></p>
+        </div>
+        <div id="problem">
+            <p id="problem-heading"></p>
+            <p id="stimulus"></p>
+            <p id="stem"></p>
+            <div id="choices">
+                <button id="A" class="choice">
+                    <p><span class="letter">A</span><span class="content"></span></p>
+                    <p class="rationale" hidden></p>
+                </button>
+                <button id="B" class="choice">
+                    <p><span class="letter">B</span><span class="content"></span></p>
+                    <p class="rationale" hidden></p>
+                </button>
+                <button id="C" class="choice">
+                    <p><span class="letter">C</span><span class="content"></span></p>
+                    <p class="rationale" hidden></p>
+                </button>
+                <button id="D" class="choice">
+                    <p><span class="letter">D</span><span class="content"></span></p>
+                    <p class="rationale" hidden></p>
+                </button>
+                <button id="E" class="choice">
+                    <p><span class="letter">E</span><span class="content"></span></p>
+                    <p class="rationale" hidden></p>
+                </button>
+            </div>
+            <button id="next">Next Question --></button>
+        </div>
+    </div>
+</main>

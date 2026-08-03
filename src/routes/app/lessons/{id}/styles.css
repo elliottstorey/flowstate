@@ -1,0 +1,142 @@
+body {
+    flex-direction: column;
+}
+
+nav {
+    display: flex;
+    flex: 0 0 auto;
+    /* Changed from flex: 1 so nav doesn't expand vertically */
+    padding: 1rem 2rem;
+    border-bottom: 1px solid var(--ui);
+}
+
+main {
+    padding: 3rem 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Wrapper for header and content */
+main>div {
+    width: 100%;
+    max-width: 65ch;
+    /* 65 characters is the optimal line length for reading */
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    /* Left align title and prose */
+}
+
+/* Container for the chips */
+main>div>span {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+#title {
+    font-size: 2.5rem;
+    line-height: 1.2;
+    margin-bottom: 2rem;
+    color: var(--tx);
+}
+
+/* === MARKDOWN PROSE STYLING === */
+#content {
+    width: 100%;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: var(--tx);
+}
+
+/* Adds consistent spacing between sibling elements (paragraphs, lists, etc) */
+#content>*+* {
+    margin-top: 1.5em;
+}
+
+/* Headings */
+#content h1,
+#content h2,
+#content h3,
+#content h4,
+#content h5,
+#content h6 {
+    font-family: "Newsreader", serif;
+    color: var(--tx);
+    margin-top: 2em;
+    margin-bottom: 0.75em;
+    line-height: 1.3;
+}
+
+/* Lists */
+#content ul,
+#content ol {
+    padding-left: 1.5rem;
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
+
+#content li {
+    margin-bottom: 0.5em;
+}
+
+#content li>ul,
+#content li>ol {
+    margin-top: 0.5em;
+    /* Proper spacing for nested lists */
+}
+
+/* Blockquotes */
+#content blockquote {
+    border-left: 4px solid var(--cy-2);
+    padding: 0.75rem 1.25rem;
+    margin: 1.5em 0;
+    background-color: var(--bg-2);
+    color: var(--tx-2);
+    border-radius: 0 0.5rem 0.5rem 0;
+}
+
+#content blockquote p {
+    margin: 0;
+}
+
+/* Code Blocks & Inline Code */
+#content pre {
+    background-color: var(--bg-2);
+    padding: 1.25rem;
+    border-radius: 0.5rem;
+    overflow-x: auto;
+    border: 1px solid var(--ui);
+}
+
+#content code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    background-color: var(--bg-2);
+    padding: 0.2em 0.4em;
+    border-radius: 0.25rem;
+    font-size: 0.85em;
+    color: var(--ma-2);
+    /* A pop of color for inline code */
+}
+
+#content pre code {
+    background-color: transparent;
+    padding: 0;
+    color: var(--tx);
+}
+
+/* Links */
+#content a {
+    color: var(--cy-2);
+    font-weight: 500;
+}
+
+/* Images */
+#content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 0.5rem;
+    display: block;
+    margin: 2em auto;
+}

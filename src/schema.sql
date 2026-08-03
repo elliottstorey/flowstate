@@ -22,28 +22,12 @@ create type question_subtype as enum (
 );
 
 create type choice_letter as enum ('A', 'B', 'C', 'D', 'E');
+create type message_role as enum ('user', 'assistant');
 
--- 1. CORE TEST ENTITIES
-create table tests (
-    id bigint generated always as identity primary key,
-    name text not null
-);
-
-create table sections (
-    id bigint generated always as identity primary key,
-    test_id bigint not null references tests(id) on delete cascade,
-    number integer not null check (number between 1 and 4),
-    type question_type not null,
-    is_variable boolean default false,
-    
-    unique (test_id, number)
-);
-
--- 2. INDEPENDENT CONTENT ENTITIES
 create table passages (
     id bigint generated always as identity primary key,
-    text text not null
-    -- section_id and number REMOVED. Passages now exist independently.
+    content text not null,
+    generated boolean not null default false
 );
 
 create table questions (
@@ -57,61 +41,72 @@ create table questions (
     answer choice_letter not null,
     difficulty integer not null check (difficulty between 1 and 5),
 
-    -- OPTIONAL EXPERT LEVEL-UP: Enforce data integrity between LR and RC.
-    -- LR needs a stimulus, RC needs a passage. 
+    generated boolean not null default false,
+
     check (
         (type = 'Logical Reasoning' and stimulus is not null and passage_id is null) or
         (type = 'Reading Comprehension' and passage_id is not null)
     )
-    -- section_id and number REMOVED. Questions now exist independently.
 );
 
 create table choices (
     id bigint generated always as identity primary key,
     question_id bigint not null references questions(id) on delete cascade,
     letter choice_letter not null,
-    text text not null,
+    content text not null,
     rationale text not null,
-    
+
     unique (question_id, letter)
 );
 
--- 3. JUNCTION TABLES (The Glue)
--- Maps independent passages to specific sections
-create table section_passages (
-    section_id bigint not null references sections(id) on delete cascade,
-    passage_id bigint not null references passages(id) on delete cascade,
-    number integer not null check (number between 1 and 4),
-    
-    primary key (section_id, passage_id),
-    unique (section_id, number)
+create table lessons (
+    id bigint generated always as identity primary key,
+    type text not null,
+    subtype text,
+    title text not null,
+    content text not null
 );
 
--- Maps independent questions to specific sections
-create table section_questions (
-    section_id bigint not null references sections(id) on delete cascade,
-    question_id bigint not null references questions(id) on delete cascade,
-    number integer not null, -- e.g., Question 1 through 26
-    
-    primary key (section_id, question_id),
-    unique (section_id, number)
+-- user tables
+
+create table tests (
+    id bigint generated always as identity primary key,
+    user_id bigint not null references auth.users(id) on delete cascade,
+
+    raw_score integer,
+    scaled_score integer check (scaled_score between 120 and 180),
+    content text,
+
+    completed_at timestamptz,
+    created_at timestamptz not null default now()
 );
 
--- 4. USER DATA
+create table sections (
+    id bigint generated always as identity primary key,
+    test_id bigint not null references tests(id) on delete cascade,
+    position integer not null check (position between 1 and 4),
+    type question_type not null,
+    variable boolean not null default false,
+
+    completed_at timestamptz,
+
+    unique (test_id, number)
+);
+
 create table answers (
     id bigint generated always as identity primary key,
-    -- user_id changed to NOT NULL
     user_id bigint not null references auth.users(id) on delete cascade,
     question_id bigint not null references questions(id) on delete cascade,
-    selected_choice choice_letter not null,
+
+    section_id bigint references sections(id) on delete cascade,
+    position integer,
+
+    selected_choice choice_letter,
     reviewed boolean not null default false,
     created_at timestamptz not null default now(),
 
-    -- Enforces that a user can only submit one answer per question
-    unique (user_id, question_id) 
+    unique (section_id, position)
 );
-
-create type message_role as enum ('user', 'assistant');
 
 create table messages (
     id bigint generated always as identity primary key,

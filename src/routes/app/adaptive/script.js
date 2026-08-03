@@ -81,7 +81,7 @@ function appendAssistantMessage(content) {
 
 async function next() {
     DOM.next.disabled = true;
-    
+
     $.features.questions--;
     questionId = null;
     answerId = null;
@@ -91,7 +91,7 @@ async function next() {
     DOM.tabChat.hidden = true;
     DOM.messages.innerHTML = "";
     DOM.choiceButtons.forEach((button) => {
-        button.className = "choice"; 
+        button.className = "choice";
         button.disabled = false;
         button.querySelector(".content").textContent = "";
     });
@@ -99,7 +99,7 @@ async function next() {
     // 1. Get next question metadata (or resume unreviewed)
     const metaRes = await fetch(`/api/questions/next`);
     const meta = await metaRes.json();
-    
+
     // 2. Fetch full question state
     const dataRes = await fetch(`/api/questions/${meta.id}`);
     const { passage, question, choices, answer: prevAnswer, messages } = await dataRes.json();
@@ -119,7 +119,7 @@ async function next() {
     setTab("problem");
 
     if (isRC && passage) {
-        DOM.passage.textContent = passage.text;
+        DOM.passage.textContent = passage.content;
     } else if (question.stimulus) {
         DOM.stimulus.textContent = question.stimulus;
     }
@@ -128,24 +128,24 @@ async function next() {
 
     choices.forEach((choice) => {
         const button = document.getElementById(choice.letter);
-        if (button) button.querySelector(".content").textContent = choice.text;
+        if (button) button.querySelector(".content").textContent = choice.content;
     });
 
     // Restore state if returning to an unreviewed/answered question
     if (prevAnswer) {
         const oldChoice = prevAnswer.selected_choice;
         const oldButton = document.getElementById(oldChoice);
-        
+
         if (oldButton) {
             const isCorrect = oldChoice === question.answer || prevAnswer.reviewed;
             oldButton.classList.add(isCorrect ? "correct" : "incorrect");
-            
+
             if (isCorrect) {
                 DOM.next.disabled = false;
             } else {
                 DOM.chat.hidden = false;
                 DOM.tabChat.hidden = false;
-                
+
                 if ($.features.messages <= 0) {
                     DOM.next.disabled = false;
                     const correctBtn = document.getElementById(question.answer);
@@ -185,12 +185,12 @@ async function answer(selectedChoice) {
         DOM.next.disabled = false;
     } else {
         document.getElementById(selectedChoice).classList.add("incorrect");
-        
-        if (data.reviewed) { 
+
+        if (data.reviewed) {
             // Triggered if out of messages on the backend
             const correctBtn = document.getElementById(data.answer);
             if (correctBtn) correctBtn.classList.add("correct");
-            DOM.next.disabled = false; 
+            DOM.next.disabled = false;
         }
 
         setTab("chat");
@@ -210,7 +210,7 @@ async function chat(content) {
             DOM.messages.scrollTop = DOM.messages.scrollHeight;
         }
         DOM.chatInput.disabled = true;
-        return; 
+        return;
     }
 
     $.features.messages--;

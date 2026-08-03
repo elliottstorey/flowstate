@@ -17,4 +17,6 @@ const subtypeWeights = {
     "Author's Attitude": 1
 };
 
-export { subtypeWeights };
+const scale = (raw) => Math.max(120, Math.min(180, 120 + Math.round((raw - 11) * 0.93 + 3.5 * Math.sin((raw / 75) * Math.PI))));
+
+export { subtypeWeights, scale };

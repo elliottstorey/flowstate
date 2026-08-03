@@ -3,7 +3,9 @@
 
 <nav>
     <h2>flowstate</h2>
-    <a onclick="$.auth.signOut()" style="cursor:pointer;"><p>Sign out</p></a>   
+    <a onclick="$.auth.signOut()" style="cursor:pointer;">
+        <p>Sign out</p>
+    </a>
 </nav>
 
 <main>
@@ -14,12 +16,12 @@
             <p id="tutor-heading"><tutor-orb></tutor-orb>Tutor</p>
             <p id="content">Hey <span id="name"></span>, welcome to flowstate! My job is to handle the heavy lifting so you don't have to stress about what to study next. You have 100 free questions & 25 free tutor messages to test drive the engine. As you answer each question, I'll start learning exactly how you think and personally guide you through your mistakes. Ready to see the difference?</p>
         </div>
+        <button id="start" class="cta" onclick="$.url += '/adaptive'">Start practicing --></button>
         <div id="topics" hidden>
             <span class="chip">Reading Comprehension</span>
             <span class="chip">Author's Attitude</span>
             <span class="chip">Difficulty 4</span>
         </div>
-        <button id="start" class="cta" onclick="$.url += '/adaptive'" >Start practicing --></button>
         <p id="subscribe" class="muted" hidden><span id="answers">7</span> of 100 free questions remaining. <a style="cursor:pointer" onclick="$.subscribe('monthly')">Upgrade now!</a></p>
     </div>
     <div id="stats">
@@ -46,24 +48,27 @@
             <p id="distance-context" class="context">left to reach the next milestone</p>
         </div>
     </div>
-    <div id="tests">
-        <h3>Practice Tests (Coming Soon)</h3>
-        <div hidden>
+    <div id="tests-container">
+        <h3>Practice Tests</h3>
+        <div class="trial" style="display:flex; flex:1; justify-content: center;align-items: center;" hidden>
+            <button onclick="$.subscribe('monthly')">🔓 Upgrade now --></button>
+        </div>
+        <div id="tests">
             <div class="test">
-                <div class="overview">
+                <div class="summary">
                     <p class="title">Practice test 1</p>
                     <p class="date">Oct 3</p>
-                    <p class="description">Baseline -- LR and RC both needed work</p>
+                    <p class="content">Baseline -- LR and RC both needed work</p>
                 </div>
                 <div class="details">
                     <p class="score">130</p>
                 </div>
             </div>
             <div class="test">
-                <div class="overview">
+                <div class="summary">
                     <p class="title">Practice test 2</p>
                     <p class="date">Oct 14</p>
-                    <p class="description">LR improved significantly. RC timing still an issue</p>
+                    <p class="content">LR improved significantly. RC timing still an issue</p>
                 </div>
                 <div class="details">
                     <p class="delta">+25</p>
@@ -71,10 +76,10 @@
                 </div>
             </div>
             <div class="test">
-                <div class="overview">
+                <div class="summary">
                     <p class="title">Practice test 3</p>
                     <p class="date">Oct 28</p>
-                    <p class="description">RC improving. Double passages still the weak point</p>
+                    <p class="content">RC improving. Double passages still the weak point</p>
                 </div>
                 <div class="details">
                     <p class="delta">+5</p>
@@ -82,79 +87,13 @@
                 </div>
             </div>
         </div>
-        <button id="new-exam" hidden>New practice exam</button>
+        <button id="test-start">New practice exam</button>
     </div>
-    <div id="lessons">
-        <h3>Lessons (Coming Soon)</h3>
-        <div class="section" hidden>
-            <h4>Logical reasoning</h4>
-            <div class="topic">
-                <p>Conclusions & disputes</p>
-                <p class="chip strong">Stronger</p>
-            </div>
-            <div class="topic">
-                <p>Assumptions</p>
-                <p class="chip strong">Stronger</p>
-            </div>
-            <div class="topic">
-                <p>Deductions & inference</p>
-                <p class="chip strong">Stronger</p>
-            </div>
-            <div class="topic">
-                <p>Explain or resolve</p>
-                <p class="chip medium">Needs work</p>
-            </div>
-            <div class="topic">
-                <p>Strengthen or weaken</p>
-                <p class="chip medium">Needs work</p>
-            </div>
-            <div class="topic">
-                <p>Flaws</p>
-                <p class="chip medium">Needs work</p>
-            </div>
-            <div class="topic">
-                <p>Techniques, roles & principles</p>
-                <p class="chip">Not started</p>
-            </div>
-            <div class="topic">
-                <p>Matching structure & principles</p>
-                <p class="chip">Not started</p>
-            </div>
-            <div class="topic">
-                <p>Matching flaws</p>
-                <p class="chip weak">Weakest</p>
-            </div>
+    <div id="lessons-container">
+        <h3>Lessons</h3>
+        <div class="trial" style="display:flex; flex:1; justify-content: center;align-items: center;" hidden>
+            <button onclick="$.subscribe('monthly')">🔓 Upgrade now --></button>
         </div>
-        <div class="section" hidden>
-            <h4>Reading comprehension</h4>
-            <div class="topic">
-                <p>Main points & primary purposes</p>
-                <p class="chip strong">Stronger</p>
-            </div>
-            <div class="topic">
-                <p>Recognizing elements</p>
-                <p class="chip strong">Stronger</p>
-            </div>
-            <div class="topic">
-                <p>Drawing inferences</p>
-                <p class="chip medium">Needs work</p>
-            </div>
-            <div class="topic">
-                <p>Analyzing structure</p>
-                <p class="chip medium">Needs work</p>
-            </div>
-            <div class="topic">
-                <p>Author's attitude</p>
-                <p class="chip weak">Weakest</p>
-            </div>
-            <div class="topic">
-                <p>Applying to new contexts</p>
-                <p class="chip">Not started</p>
-            </div>
-            <div class="topic">
-                <p>Meaning in context</p>
-                <p class="chip">Not started</p>
-            </div>
-        </div>
+        <div id="lessons"></div>
     </div>
 </main>

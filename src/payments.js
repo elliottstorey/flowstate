@@ -2,11 +2,12 @@ export default {
     successUrl: "/app",
     cancelUrl: "/app",
     features: {
-        questions:  async ({ db, user, periodStart }) => {
+        questions: async ({ db, user, periodStart }) => {
             const questions = await db`
                 select * from answers
                 where user_id=${user}
                 and created_at >= ${periodStart}
+                and selected_choice is not null
             `;
             return questions.length;
         },

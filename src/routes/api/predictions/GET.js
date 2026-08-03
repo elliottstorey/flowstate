@@ -13,6 +13,7 @@ export default async function handler({ db, user }) {
         FROM answers a 
         JOIN questions q ON a.question_id = q.id 
         WHERE a.user_id = ${user.id} 
+        and a.selected_choice is not null
         ORDER BY a.created_at ASC
     `;
 
@@ -48,7 +49,7 @@ export default async function handler({ db, user }) {
             const { weight, history } = rollingState[key];
             const correct = history.filter(Boolean).length;
             const missing = weight - history.length;
-            
+
             // Formula: correct + (0.5 for each missing question for guessing baseline)
             tempRaw += weight * ((correct + (0.5 * missing)) / weight);
             tempConfidence += history.length;
@@ -73,14 +74,14 @@ export default async function handler({ db, user }) {
         const { weight, history } = rollingState[key];
         const correct = history.filter(Boolean).length;
         const missing = weight - history.length;
-        
+
         currentRaw += weight * ((correct + (0.5 * missing)) / weight);
         currentConfidenceCount += history.length;
     }
 
     const predicted = scale(currentRaw);
     const confidence = currentConfidenceCount / TOTAL_TEST_WEIGHT;
-    
+
     // If they haven't answered a full test yet, the baseline is just their current predicted score
     const baseline = hasFilledTest ? minHistoricalScore : predicted;
 
@@ -91,16 +92,17 @@ export default async function handler({ db, user }) {
             COUNT(*) FILTER (WHERE created_at >= NOW() - INTERVAL '7 days') as curr_week,
             COUNT(*) FILTER (WHERE created_at >= NOW() - INTERVAL '14 days' AND created_at < NOW() - INTERVAL '7 days') as prev_week
         FROM answers
-        WHERE user_id = ${user.id};
+        WHERE user_id = ${user.id}
+        and selected_choice is not null;
     `;
 
     // 6. Compute Progress & Milestones
     const totalAnswered = Number(stats?.total || 0);
     const pointsGained = Math.max(0, predicted - baseline);
     const score = Math.min(GOAL_SCORE, Math.ceil((predicted + 1) / 5) * 5);
-    
-    const questionsPerPoint = (pointsGained >= 2 && totalAnswered > 100) 
-        ? Math.round(totalAnswered / pointsGained) 
+
+    const questionsPerPoint = (pointsGained >= 2 && totalAnswered > 100)
+        ? Math.round(totalAnswered / pointsGained)
         : GLOBAL_QUESTIONS_PER_POINT;
 
     return {

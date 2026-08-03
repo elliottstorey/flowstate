@@ -1,0 +1,306 @@
+body {
+    height: 100vh;
+    display: flex;
+    margin: 0;
+}
+
+main {
+    flex: 4;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+nav {
+    display: flex;
+    padding: 1rem;
+    border-bottom: 1px solid var(--ui);
+}
+
+nav h2 {
+    font-family: "Newsreader", serif;
+    cursor: pointer;
+    margin: 0;
+}
+
+#tabs {
+    display: none;
+    gap: 0.5rem;
+    padding: 1rem 1rem 0;
+}
+
+#tabs button.active {
+    background-color: var(--bg-2);
+}
+
+#question {
+    flex: 1;
+    display: flex;
+    min-height: 0;
+    margin: 1rem;
+    gap: 1rem;
+}
+
+#reference {
+    max-width: 25rem;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    min-height: 0;
+    border-radius: 0.5rem;
+    background-color: var(--bg-2);
+    padding: 1rem;
+}
+
+#passage-heading {
+    font-weight: bold;
+    color: var(--tx-2);
+    margin: 0;
+}
+
+#passage {
+    flex: 1;
+    white-space: pre-line;
+    overflow-y: auto;
+    min-height: 0;
+    margin: 0;
+}
+
+#problem {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    max-width: 75rem;
+    width: 100%;
+    margin-inline: auto;
+    overflow-y: auto;
+    min-height: 0;
+    padding-right: 0.5rem;
+}
+
+/* MAGIC: Vertically centers the problem but allows scrolling without clipping */
+#problem::before,
+#problem::after {
+    content: "";
+    margin: auto;
+}
+
+#problem p {
+    font-size: 1.063rem;
+    line-height: 1.6;
+    margin: 0;
+}
+
+#problem-heading {
+    color: var(--tx-2);
+    font-weight: 500;
+    font-size: 1rem !important;
+}
+
+#stem {
+    font-weight: 400;
+}
+
+#choices {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.choice {
+    text-align: start;
+    font-family: inherit;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.choice.correct,
+.choice.correct:hover {
+    border-color: var(--gr);
+    background-color: color-mix(in srgb, var(--gr) 20%, var(--bg));
+}
+
+.choice.incorrect,
+.choice.incorrect:hover {
+    border-color: var(--re);
+    background-color: color-mix(in srgb, var(--re) 20%, var(--bg));
+}
+
+.choice.selected {
+    border-color: var(--tx-2);
+    background-color: color-mix(in srgb, var(--tx-2) 10%, var(--bg));
+}
+
+.choice .letter {
+    margin-right: 0.5rem;
+    font-weight: bold;
+    color: var(--tx-2);
+}
+
+.choice .rationale {
+    color: var(--tx-2);
+}
+
+#chat {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    max-height: 100vh;
+    padding: 1rem;
+    gap: 1rem;
+    background-color: var(--bg-2);
+    margin: 1rem;
+    border-radius: 0.5rem;
+    min-height: 0;
+}
+
+#chat p {
+    font-size: 1.063rem;
+    line-height: 1.6;
+}
+
+#chat-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-weight: bold;
+    color: var(--tx-2);
+}
+
+.tutor-title {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+#message-counter {
+    font-size: 1rem;
+    font-weight: normal;
+    color: var(--tx-3);
+}
+
+.cta {
+    padding: 0.75rem 1.5rem;
+    background-color: var(--bg-3, #333);
+    color: var(--tx, #fff);
+    border: none;
+    border-radius: 0.5rem;
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.cta:hover {
+    opacity: 0.9;
+}
+
+#messages {
+    flex: 1;
+    display: flex;
+    overflow: auto;
+    flex-direction: column;
+    gap: 1rem;
+    min-height: 0;
+}
+
+#messages>div>*+* {
+    margin-top: 1rem;
+}
+
+.user {
+    margin-left: 5rem;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--ui-3);
+    border-radius: 0.5rem;
+    align-self: flex-end;
+}
+
+mark {
+    --accent: var(--tx-2);
+    padding-inline: 2px;
+    border-top-left-radius: 2px;
+    border-top-right-radius: 2px;
+    background-color: color-mix(in srgb, var(--accent) 20%, var(--bg));
+    border-bottom: 2px solid var(--accent);
+}
+
+mark.red {
+    --accent: var(--re);
+}
+
+mark.orange {
+    --accent: var(--or);
+}
+
+mark.yellow {
+    --accent: var(--ye);
+}
+
+mark.green {
+    --accent: var(--gr);
+}
+
+mark.cyan {
+    --accent: var(--cy);
+}
+
+mark.blue {
+    --accent: var(--bl);
+}
+
+mark.purple {
+    --accent: var(--pu);
+}
+
+mark.magenta {
+    --accent: var(--ma);
+}
+
+/* Mobile Layout */
+@media (max-width: 640px) {
+    #tabs:not([hidden]) {
+        display: flex;
+    }
+
+    body {
+        flex-direction: column;
+    }
+
+    main {
+        display: contents;
+    }
+
+    #question {
+        flex-direction: column;
+        margin: 0;
+        padding: 1rem;
+    }
+
+    #question.tab-off {
+        display: none;
+    }
+
+    #reference,
+    #problem {
+        max-width: none;
+        margin: 0;
+        flex: 1;
+    }
+
+    #chat {
+        max-width: none;
+        margin: 1rem;
+        /* Restored margin so it looks like a floating card again */
+        flex: 1;
+    }
+
+    #reference.tab-off,
+    #problem.tab-off,
+    #chat.tab-off {
+        display: none;
+    }
+}

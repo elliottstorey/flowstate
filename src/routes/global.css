@@ -29,9 +29,9 @@
 }
 
 @property --angle {
-  syntax: "<angle>";
-  inherits: false;
-  initial-value: 0deg;
+    syntax: "<angle>";
+    inherits: false;
+    initial-value: 0deg;
 }
 
 * {
@@ -47,7 +47,7 @@
 
 body {
     min-height: 100vh;
-    width: 100vw;
+    width: 100%;
     display: flex;
     background-color: var(--bg);
     color: var(--tx);
@@ -74,6 +74,15 @@ a::after {
     transform-origin: left;
     transition: transform 0.3s ease;
     background-color: var(--cy-2)
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: "Newsreader", serif;
 }
 
 a:hover::after {
@@ -129,4 +138,17 @@ input {
 p.muted {
     font-size: 1rem;
     color: var(--tx-3);
+}
+
+.chip {
+    padding: 0.25rem 0.5rem;
+    border: 0.5px solid var(--ui-3);
+    border-radius: 16px;
+    font-size: 0.8rem;
+    white-space: nowrap;
+}
+
+p {
+    font-size: 1.063rem;
+    line-height: 1.6;
 }
