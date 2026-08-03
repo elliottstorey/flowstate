@@ -90,7 +90,7 @@ create table sections (
 
     completed_at timestamptz,
 
-    unique (test_id, number)
+    unique (test_id, position)
 );
 
 create table answers (
