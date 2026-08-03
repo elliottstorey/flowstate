@@ -2,7 +2,6 @@ import fs from "fs/promises";
 import path from "path";
 
 async function seedLsatContent(db) {
-    // We now check for 'questions' instead of 'tests', since tests are now user-specific.
     const [{ count }] = await db`SELECT count(*)::int FROM questions`;
 
     if (count > 0) {
@@ -20,15 +19,11 @@ async function seedLsatContent(db) {
         for (const test of tests) {
             try {
                 await db.begin(async (tx) => {
-                    // Tests and Sections are now user-session tables. 
-                    // We only extract and seed the global, independent content from the JSON.
-
                     await Promise.all(test.sections.filter(s => s.number <= 4).map(async (sec) => {
                         const pMap = {};
 
                         if (sec.type === 'Reading Comprehension') {
                             await Promise.all(sec.passages.map(async (p) => {
-                                // Mapped p.text to the new 'content' column
                                 const [{ id: pId }] = await tx`INSERT INTO passages (content) VALUES (${p.text}) RETURNING id`;
                                 pMap[p.number] = pId;
                             }));
@@ -42,7 +37,6 @@ async function seedLsatContent(db) {
                                 VALUES (${sec.type}, ${q.subtype}, ${isLR ? null : pMap[q.passage_number]}, ${isLR ? q.stimulus : null}, ${q.stem}, ${q.answer}, ${q.difficulty}) RETURNING id`;
 
                             if (q.choices?.length) {
-                                // Mapped c.text to the new 'content' column
                                 const choices = q.choices.map(c => ({
                                     question_id: qId,
                                     letter: c.letter,
@@ -72,35 +66,31 @@ async function seedLessons(db) {
         return;
     }
 
-    const lessonsDir = path.join(process.cwd(), 'data', 'library', 'lessons');
-    console.log(`Scanning ${lessonsDir}...`);
+    const lessonsFile = path.join(process.cwd(), 'data', 'lessons.json');
+    console.log(`Loading ${lessonsFile}...`);
 
     try {
-        const files = await fs.readdir(lessonsDir);
-        const jsonFiles = files.filter(f => f.endsWith('.json'));
+        const rawData = await fs.readFile(lessonsFile, 'utf-8');
+        const lessons = JSON.parse(rawData);
 
-        if (jsonFiles.length === 0) {
-            console.log(`[SKIP] No JSON lesson files found.`);
+        if (lessons.length === 0) {
+            console.log(`[SKIP] No lessons found in JSON.`);
             return;
         }
 
-        for (const file of jsonFiles) {
+        for (const lesson of lessons) {
             try {
-                const filePath = path.join(lessonsDir, file);
-                const rawData = await fs.readFile(filePath, 'utf-8');
-                const lesson = JSON.parse(rawData);
-
                 await db`
                     INSERT INTO lessons (title, type, subtype, content) 
                     VALUES (${lesson.title}, ${lesson.type}, ${lesson.subtype}, ${lesson.content})
                 `;
                 console.log(`[OK] Lesson seeded: ${lesson.title}`);
             } catch (err) {
-                console.error(`[FAIL] Error seeding lesson [${file}]:`, err.message);
+                console.error(`[FAIL] Error seeding lesson [${lesson.title}]:`, err.message);
             }
         }
     } catch (err) {
-        console.error(`[SKIP] Could not read lessons directory at ${lessonsDir}`);
+        console.error(`[SKIP] Could not read lessons file at ${lessonsFile}`);
     }
 }
 
