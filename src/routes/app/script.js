@@ -72,7 +72,7 @@ async function predictions() {
     const { currWeek, prevWeek } = questions;
     const trend = currWeek > prevWeek ? "up from" : currWeek < prevWeek ? "down from" : "even with";
     DOM.velocity.innerText = `${questions.currWeek}`;
-    DOM.velocityContext.innerText = `${trend} +${prevWeek} last week`;
+    DOM.velocityContext.innerText = `${trend} ${prevWeek} last week`;
 
     // distance
     const { score, questionsRemaining } = milestone;
@@ -85,9 +85,9 @@ async function predictions() {
         const progress = (confidence / 0.5) * 100;
         DOM.predicted.classList.add("hidden");
         setFill(DOM.predictedMeter, progress);
-        DOM.predictedContext.innerText = `~${questions} questions to unlock initial prediction`;
+        DOM.predictedContext.innerText = `~${questions} questions to unlock score prediction`;
         DOM.distance.innerText = `${questions}`;
-        DOM.distanceContext.innerText = `remaining to unlock initial prediction`;
+        DOM.distanceContext.innerText = `remaining to unlock score prediction`;
     } else if (confidence < 1) {
         const questions = Math.ceil(76 * (1 - confidence));
         const progress = ((confidence - 0.5) / 0.5) * 100;
