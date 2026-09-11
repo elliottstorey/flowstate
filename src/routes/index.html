@@ -2,7 +2,7 @@
 
 <header>
     <h2>flowstate</h2>
-    <button onclick="$.url = '/app'">See your first question --></button>
+    <button onclick="$.url = '/app'">Get started --></button>
 </header>
 
 <section id="hero">
@@ -10,7 +10,7 @@
         <p class="chip"><tutor-orb></tutor-orb>Study smarter, not longer</p>
         <h1>The fastest way to raise your LSAT score</h1>
         <p>A personalized approach to the LSAT where you learn by doing. Our adaptive platform targets your exact weaknesses, feeds you the perfect question at the perfect time, and walks you through mistakes with your own private tutor. Get a higher score in half the study time.</p>
-        <button class="cta" onclick="$.url = '/app'">See your first question --></button>
+        <button class="cta" onclick="$.url = '/app'">Get started --></button>
         <p class="muted" style="margin-top: -0.5rem">No credit card needed</p>
     </div>
     <div class="visual">
@@ -62,29 +62,35 @@
             <div class="slots">
                 <div class="slot a">
                     <p class="slot-label">Skill</p>
-                    <div class="reel-window"><div class="reel reelA">
-                        <div class="opt">Strengthen</div>
-                        <div class="opt">Flaw</div>
-                        <div class="opt">Parallel</div>
-                        <div class="opt">Inference</div>
-                        <div class="opt final">Assumption</div>
-                    </div></div>
+                    <div class="reel-window">
+                        <div class="reel reelA">
+                            <div class="opt">Strengthen</div>
+                            <div class="opt">Flaw</div>
+                            <div class="opt">Parallel</div>
+                            <div class="opt">Inference</div>
+                            <div class="opt final">Assumption</div>
+                        </div>
+                    </div>
                 </div>
                 <div class="slot b">
                     <p class="slot-label">Difficulty</p>
-                    <div class="reel-window"><div class="reel reelB">
-                        <div class="opt">Easy</div>
-                        <div class="opt">Hard</div>
-                        <div class="opt final">Medium</div>
-                    </div></div>
+                    <div class="reel-window">
+                        <div class="reel reelB">
+                            <div class="opt">Easy</div>
+                            <div class="opt">Hard</div>
+                            <div class="opt final">Medium</div>
+                        </div>
+                    </div>
                 </div>
                 <div class="slot c">
                     <p class="slot-label">Why this one</p>
-                    <div class="reel-window"><div class="reel reelC">
-                        <div class="opt">Common trap</div>
-                        <div class="opt">Timing drill</div>
-                        <div class="opt final">Your last miss</div>
-                    </div></div>
+                    <div class="reel-window">
+                        <div class="reel reelC">
+                            <div class="opt">Common trap</div>
+                            <div class="opt">Timing drill</div>
+                            <div class="opt final">Your last miss</div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="result">
@@ -131,11 +137,15 @@
             </div>
             <div class="bar-block">
                 <div class="bar-label"><span>Time remaining</span><span>35:00</span></div>
-                <div class="bar-track"><div class="bar-fill time-fill"></div></div>
+                <div class="bar-track">
+                    <div class="bar-fill time-fill"></div>
+                </div>
             </div>
             <div class="bar-block">
                 <div class="bar-label"><span>Questions answered</span><span>27 total</span></div>
-                <div class="bar-track"><div class="bar-fill q-fill"></div></div>
+                <div class="bar-track">
+                    <div class="bar-fill q-fill"></div>
+                </div>
             </div>
             <p class="complete">✓ Section complete — right on pace</p>
         </div>
@@ -157,7 +167,9 @@
             <div class="player">
                 <span class="play-btn">▶</span>
                 <div class="scrub-wrap">
-                    <div class="scrub-track"><div class="scrub-fill"></div></div>
+                    <div class="scrub-track">
+                        <div class="scrub-fill"></div>
+                    </div>
                     <span class="duration">2h 58m remaining</span>
                 </div>
             </div>
@@ -213,14 +225,14 @@
 
 <section id="cta">
     <h2>Ready to stop guessing and start understanding?</h2>
-    <button class="cta" onclick="$.url = '/app'">See your first question --></button>
+    <button class="cta" onclick="$.url = '/app'">Get started --></button>
     <p class="muted" style="margin-top: -1.5rem">No credit card needed</p>
 </section>
 
 <footer>
     <a href="mailto:support@withflowstate.com" target="_blank">support@withflowstate.com</a>
     <span>
-       <a href="/terms" target="_blank">Terms</a>
+        <a href="/terms" target="_blank">Terms</a>
         <a href="/privacy" target="_blank">Privacy</a>
     </span>
 </footer>
