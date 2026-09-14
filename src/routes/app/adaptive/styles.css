@@ -1,7 +1,7 @@
 body {
     height: 100vh;
-    display: flex; 
-    margin: 0; 
+    display: flex;
+    margin: 0;
 }
 
 main {
@@ -63,7 +63,7 @@ nav h2 {
     flex: 1;
     white-space: pre-line;
     overflow-y: auto;
-    min-height: 0; 
+    min-height: 0;
     margin: 0;
 }
 
@@ -75,9 +75,9 @@ nav h2 {
     max-width: 75rem;
     width: 100%;
     margin-inline: auto;
-    overflow-y: auto; 
-    min-height: 0; 
-    padding-right: 0.5rem; 
+    overflow-y: auto;
+    min-height: 0;
+    padding-right: 0.5rem;
 }
 
 /* MAGIC: Vertically centers the problem but allows scrolling without clipping */
@@ -132,7 +132,7 @@ nav h2 {
 .choice .letter {
     margin-right: 0.5rem;
     font-weight: bold;
-	color: var(--tx-2);
+    color: var(--tx-2);
 }
 
 .choice .rationale {
@@ -149,7 +149,7 @@ nav h2 {
     background-color: var(--bg-2);
     margin: 1rem;
     border-radius: 0.5rem;
-    min-height: 0; 
+    min-height: 0;
 }
 
 #chat p {
@@ -160,7 +160,7 @@ nav h2 {
 #chat-heading {
     display: flex;
     align-items: center;
-    justify-content: space-between; 
+    justify-content: space-between;
     font-weight: bold;
     color: var(--tx-2);
 }
@@ -179,7 +179,7 @@ nav h2 {
 
 .cta {
     padding: 0.75rem 1.5rem;
-    background-color: var(--bg-3, #333); 
+    background-color: var(--bg-3, #333);
     color: var(--tx, #fff);
     border: none;
     border-radius: 0.5rem;
@@ -199,10 +199,10 @@ nav h2 {
     overflow: auto;
     flex-direction: column;
     gap: 1rem;
-    min-height: 0; 
+    min-height: 0;
 }
 
-#messages > div > * + * {
+#messages>div>*+* {
     margin-top: 1rem;
 }
 
@@ -223,14 +223,37 @@ mark {
     border-bottom: 2px solid var(--accent);
 }
 
-mark.red { --accent: var(--re); }
-mark.orange { --accent: var(--or); }
-mark.yellow { --accent: var(--ye); }
-mark.green { --accent: var(--gr); }
-mark.cyan { --accent: var(--cy); }
-mark.blue { --accent: var(--bl); }
-mark.purple { --accent: var(--pu); }
-mark.magenta { --accent: var(--ma); }
+mark.red {
+    --accent: var(--re);
+}
+
+mark.orange {
+    --accent: var(--or);
+}
+
+mark.yellow {
+    --accent: var(--ye);
+}
+
+mark.green {
+    --accent: var(--gr);
+}
+
+mark.cyan {
+    --accent: var(--cy);
+}
+
+mark.blue {
+    --accent: var(--bl);
+}
+
+mark.purple {
+    --accent: var(--pu);
+}
+
+mark.magenta {
+    --accent: var(--ma);
+}
 
 /* Mobile Layout */
 @media (max-width: 640px) {
@@ -243,13 +266,13 @@ mark.magenta { --accent: var(--ma); }
     }
 
     main {
-        display: contents; 
+        display: contents;
     }
 
     #question {
         flex-direction: column;
         margin: 0;
-        padding: 1rem; 
+        padding: 1rem;
     }
 
     #question.tab-off {
@@ -260,12 +283,13 @@ mark.magenta { --accent: var(--ma); }
     #problem {
         max-width: none;
         margin: 0;
-        flex: 1; 
+        flex: 1;
     }
 
     #chat {
         max-width: none;
-        margin: 1rem; /* Restored margin so it looks like a floating card again */
+        margin: 1rem;
+        /* Restored margin so it looks like a floating card again */
         flex: 1;
     }
 

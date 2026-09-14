@@ -14,6 +14,7 @@ const DOM = {
     stem: document.getElementById("stem"),
     choices: document.getElementById("choices"),
     choiceButtons: document.querySelectorAll(".choice"),
+    showAnswer: document.getElementById("show-answer"),
     next: document.getElementById("next"),
     chat: document.getElementById("chat"),
     messages: document.getElementById("messages"),
@@ -25,6 +26,8 @@ const DOM = {
 let questionId = null;
 let answerId = null;
 let questionsCount = 0;
+let correctChoiceId = null; // letter of the correct choice for the current question, once known
+let selectedChoiceId = null; // letter of the choice the user picked, once known
 
 function updateLimitsUI() {
     if ($.activeProducts.includes("monthly")) {
@@ -35,7 +38,45 @@ function updateLimitsUI() {
     }
 }
 
+// --- Show Answer / Next button state machine -------------------------------
+
+function showAnswerButtonState() {
+    DOM.showAnswer.hidden = false;
+    DOM.showAnswer.disabled = false;
+    DOM.next.hidden = true;
+}
+
+function showNextButtonState() {
+    DOM.showAnswer.hidden = true;
+    DOM.next.hidden = false;
+    DOM.next.disabled = false;
+}
+
+function hideBothButtons() {
+    DOM.showAnswer.hidden = true;
+    DOM.showAnswer.disabled = false;
+    DOM.next.hidden = true;
+    DOM.next.disabled = true;
+}
+
+// Reveals the correct choice, the relevant rationale(s), and swaps to the Next button.
+function revealAnswer() {
+    if (correctChoiceId) {
+        const btn = document.getElementById(correctChoiceId);
+        if (btn && !btn.classList.contains("correct")) btn.classList.add("correct");
+    }
+    // Only show rationale for the choice they picked (if wrong) and the correct
+    // choice - not every option. If they got it right, that's just one rationale.
+    new Set([correctChoiceId, selectedChoiceId]).forEach((id) => {
+        if (!id) return;
+        const rationale = document.getElementById(id)?.querySelector(".rationale");
+        if (rationale && rationale.textContent) rationale.hidden = false;
+    });
+    showNextButtonState();
+}
+
 DOM.next.addEventListener("click", next);
+DOM.showAnswer.addEventListener("click", revealAnswer);
 
 DOM.choices.addEventListener("click", (event) => {
     const choice = event.target.closest(".choice");
@@ -85,15 +126,21 @@ async function next() {
     $.features.questions--;
     questionId = null;
     answerId = null;
+    correctChoiceId = null;
+    selectedChoiceId = null;
 
     // Reset UI
     DOM.chat.hidden = true;
     DOM.tabChat.hidden = true;
     DOM.messages.innerHTML = "";
+    hideBothButtons();
     DOM.choiceButtons.forEach((button) => {
         button.className = "choice";
         button.disabled = false;
         button.querySelector(".content").textContent = "";
+        const rationale = button.querySelector(".rationale");
+        rationale.textContent = "";
+        rationale.hidden = true;
     });
 
     // 1. Get next question metadata (or resume unreviewed)
@@ -106,9 +153,10 @@ async function next() {
 
     questionId = question.id;
     answerId = prevAnswer?.id || null;
+    correctChoiceId = question.answer;
     questionsCount++;
 
-    DOM.problemHeading.innerText = `${question.type} • Question ${questionsCount} of ♾️ • ${meta.subtype} • Difficulty ${meta.difficulty}`;
+    DOM.problemHeading.innerText = `Question ${questionsCount} • ${question.type} • ${meta.subtype} • Difficulty ${meta.difficulty}`;
 
     const isRC = question.type === "Reading Comprehension";
     DOM.tabs.hidden = false;
@@ -128,28 +176,34 @@ async function next() {
 
     choices.forEach((choice) => {
         const button = document.getElementById(choice.letter);
-        if (button) button.querySelector(".content").textContent = choice.content;
+        if (!button) return;
+        button.querySelector(".content").textContent = choice.content;
+        const rationale = button.querySelector(".rationale");
+        if (rationale) rationale.textContent = choice.rationale || "";
     });
 
     // Restore state if returning to an unreviewed/answered question
     if (prevAnswer) {
         const oldChoice = prevAnswer.selected_choice;
         const oldButton = document.getElementById(oldChoice);
+        selectedChoiceId = oldChoice;
 
         if (oldButton) {
             const isCorrect = oldChoice === question.answer || prevAnswer.reviewed;
             oldButton.classList.add(isCorrect ? "correct" : "incorrect");
 
             if (isCorrect) {
-                DOM.next.disabled = false;
+                // Right (or already reviewed) - just show the Next button.
+                revealAnswer();
             } else {
                 DOM.chat.hidden = false;
                 DOM.tabChat.hidden = false;
 
                 if ($.features.messages <= 0) {
-                    DOM.next.disabled = false;
-                    const correctBtn = document.getElementById(question.answer);
-                    if (correctBtn) correctBtn.classList.add("correct");
+                    // No messages left to talk it through - reveal and let them move on.
+                    revealAnswer();
+                } else {
+                    showAnswerButtonState();
                 }
             }
         }
@@ -175,6 +229,8 @@ async function answer(selectedChoice) {
     if (data.error) return alert(data.error);
 
     answerId = data.id;
+    correctChoiceId = data.answer || correctChoiceId;
+    selectedChoiceId = selectedChoice;
 
     DOM.chat.hidden = false;
     DOM.tabChat.hidden = false;
@@ -182,23 +238,19 @@ async function answer(selectedChoice) {
     if (data.correct) {
         document.getElementById(selectedChoice).classList.add("correct");
         confetti();
-        DOM.next.disabled = false;
+        revealAnswer(); // auto-reveal + go straight to "Next question"
     } else {
         document.getElementById(selectedChoice).classList.add("incorrect");
 
-        if (data.reviewed) {
-            // Triggered if out of messages on the backend
-            const correctBtn = document.getElementById(data.answer);
-            if (correctBtn) correctBtn.classList.add("correct");
-            DOM.next.disabled = false;
-        }
+        // Don't reveal the correct answer yet - let them try the tutor first.
+        showAnswerButtonState();
 
         setTab("chat");
-        chat(`I picked ${selectedChoice}. Can you help me understand why this is wrong?`);
+        chat(`I picked ${selectedChoice}. Can you help me understand why this is wrong?`, { auto: true });
     }
 }
 
-async function chat(content) {
+async function chat(content, { auto = false } = {}) {
     if ($.features.messages <= 0) {
         if (!DOM.messages.querySelector(".cta")) {
             const btn = document.createElement("button");
@@ -210,6 +262,7 @@ async function chat(content) {
             DOM.messages.scrollTop = DOM.messages.scrollHeight;
         }
         DOM.chatInput.disabled = true;
+        revealAnswer(); // can't keep talking it through - let them move on
         return;
     }
 
@@ -219,6 +272,12 @@ async function chat(content) {
 
     appendUserMessage(content);
     DOM.messages.scrollTop = DOM.messages.scrollHeight;
+
+    // A genuine user message to the tutor counts as "talking it through" -
+    // swap Show Answer -> Next right away. The automatic first message sent
+    // right after a wrong pick doesn't count, so Show Answer stays visible
+    // until the user actually engages or the tutor marks it reviewed.
+    if (!auto) revealAnswer();
 
     const response = await fetch(`/api/answers/${answerId}/messages`, {
         method: "POST",
@@ -230,9 +289,9 @@ async function chat(content) {
     appendAssistantMessage(data.content);
 
     if (data.reviewed && data.answer) {
-        document.getElementById(data.answer).classList.add("correct");
+        correctChoiceId = data.answer;
         confetti();
-        DOM.next.disabled = false;
+        revealAnswer();
     }
 
     DOM.chatInput.disabled = false;

@@ -6,10 +6,10 @@
 		<h2 onclick="$.url = '/app'">flowstate</h2>
 	</nav>
 	<div id="tabs" hidden>
-        <button data-tab="reference" hidden>Passage</button>
-        <button data-tab="problem" class="active">Question</button>
-        <button data-tab="chat" id="tab-chat" hidden>Tutor</button>
-    </div>
+		<button data-tab="reference" hidden>Passage</button>
+		<button data-tab="problem" class="active">Question</button>
+		<button data-tab="chat" id="tab-chat" hidden>Tutor</button>
+	</div>
 	<div id="question">
 		<div id="reference" hidden>
 			<p id="passage-heading">Passage</p>
@@ -41,19 +41,20 @@
 					<p class="rationale" hidden></p>
 				</button>
 			</div>
-			<button id="next">Next Question --></button>
+			<button id="show-answer" hidden>Show answer --></button>
+			<button id="next" hidden>Next question --></button>
 		</div>
 	</div>
 </main>
 
 <!-- Update your aside inside the HTML -->
 <aside id="chat" hidden>
-    <div id="chat-heading">
-        <div class="tutor-title">
-            <tutor-orb></tutor-orb><span>Tutor</span>
-        </div>
-        <span id="message-counter"><span id="messages-left"></span> of 25 free messages remaining</span>
-    </div>
-    <div id="messages"></div>
-    <input id="chat-input" placeholder="Ask a question about the problem..." />
+	<div id="chat-heading">
+		<div class="tutor-title">
+			<tutor-orb></tutor-orb><span>Tutor</span>
+		</div>
+		<span id="message-counter"><span id="messages-left"></span> of 25 free messages remaining</span>
+	</div>
+	<div id="messages"></div>
+	<input id="chat-input" placeholder="Ask a question about the problem..." />
 </aside>
