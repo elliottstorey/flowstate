@@ -246,11 +246,11 @@ async function answer(selectedChoice) {
         showAnswerButtonState();
 
         setTab("chat");
-        chat(`I picked ${selectedChoice}. Can you help me understand why this is wrong?`, { auto: true });
+        chat(`I picked ${selectedChoice}. Can you help me understand why this is wrong?`);
     }
 }
 
-async function chat(content, { auto = false } = {}) {
+async function chat(content) {
     if ($.features.messages <= 0) {
         if (!DOM.messages.querySelector(".cta")) {
             const btn = document.createElement("button");
@@ -272,12 +272,6 @@ async function chat(content, { auto = false } = {}) {
 
     appendUserMessage(content);
     DOM.messages.scrollTop = DOM.messages.scrollHeight;
-
-    // A genuine user message to the tutor counts as "talking it through" -
-    // swap Show Answer -> Next right away. The automatic first message sent
-    // right after a wrong pick doesn't count, so Show Answer stays visible
-    // until the user actually engages or the tutor marks it reviewed.
-    if (!auto) revealAnswer();
 
     const response = await fetch(`/api/answers/${answerId}/messages`, {
         method: "POST",
