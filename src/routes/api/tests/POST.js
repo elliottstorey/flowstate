@@ -25,9 +25,8 @@ async function handler({ db, user }) {
 
         let sectionNum = 1;
         for (const secLayout of sections) {
-            // Fix 1 & 2: Added commas, fixed variable naming, and used 'number' instead of 'position'
             const [section] = await tx`
-                insert into sections (test_id, number, type, variable)
+                insert into sections (test_id, position, type, variable)
                 values (${test.id}, ${sectionNum}, ${secLayout.type}, ${secLayout.variable})
                 returning id, type
             `;

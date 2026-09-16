@@ -27,6 +27,10 @@ async function init() {
     sIdx = test.sections.findIndex(s => !s.completed_at);
     if (sIdx === -1) return ($.url = "/app"); // Test is fully complete
 
+    if (!test.sections[sIdx].answers.length) {
+        return alert("This practice test has no questions.");
+    }
+
     // Smart Resume: Find the first unanswered question in this section
     aIdx = Math.max(0, test.sections[sIdx].answers.findIndex(a => !a.selected_choice));
 
@@ -36,10 +40,13 @@ async function init() {
 function render() {
     const section = test.sections[sIdx];
     const answer = section.answers[aIdx];
+    if (!answer || !answer.question) {
+        return alert("This practice test question could not be loaded.");
+    }
     const q = answer.question;
 
     // 1. Text Content
-    DOM.problemHeading.innerText = `Section ${section.number} — Question ${aIdx + 1} of ${section.answers.length}`;
+    DOM.problemHeading.innerText = `Section ${section.position} — Question ${aIdx + 1} of ${section.answers.length}`;
     DOM.stimulus.innerText = q.stimulus || "";
     DOM.stem.innerText = q.stem;
 

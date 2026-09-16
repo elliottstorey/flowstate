@@ -11,10 +11,10 @@ async function handler({ db, user, params }) {
 
     // 2. Fetch the sections
     const sections = await db`
-        select id, number, type, variable, completed_at 
+        select id, position, type, variable, completed_at
         from sections 
         where test_id = ${test.id} 
-        order by number asc
+        order by position asc
     `;
 
     // 3. Fetch all answers, questions, and passages (OMITTING the `answer` column)
