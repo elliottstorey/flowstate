@@ -65,13 +65,21 @@ function revealAnswer() {
         const btn = document.getElementById(correctChoiceId);
         if (btn && !btn.classList.contains("correct")) btn.classList.add("correct");
     }
-    // Only show rationale for the choice they picked (if wrong) and the correct
-    // choice - not every option. If they got it right, that's just one rationale.
-    new Set([correctChoiceId, selectedChoiceId]).forEach((id) => {
-        if (!id) return;
-        const rationale = document.getElementById(id)?.querySelector(".rationale");
-        if (rationale && rationale.textContent) rationale.hidden = false;
+
+    DOM.choiceButtons.forEach((button) => {
+        const rationale = button.querySelector(".rationale");
+        const text = rationale?.querySelector(".rationale-text");
+        const toggle = rationale?.querySelector(".rationale-toggle");
+        if (!rationale || !text || !text.textContent) return;
+
+        rationale.hidden = false;
+
+        // Correct answer and the user's own pick start expanded; everything else stays collapsed.
+        const shouldExpand = button.id === correctChoiceId || button.id === selectedChoiceId;
+        text.hidden = !shouldExpand;
+        toggle.textContent = shouldExpand ? "Hide rationale" : "Show rationale";
     });
+
     showNextButtonState();
 }
 
@@ -79,6 +87,16 @@ DOM.next.addEventListener("click", next);
 DOM.showAnswer.addEventListener("click", revealAnswer);
 
 DOM.choices.addEventListener("click", (event) => {
+    const toggle = event.target.closest(".rationale-toggle");
+    if (toggle) {
+        event.stopPropagation();
+        const rationale = toggle.closest(".rationale");
+        const text = rationale.querySelector(".rationale-text");
+        const isHidden = text.hidden;
+        text.hidden = !isHidden;
+        toggle.textContent = isHidden ? "Hide rationale" : "Show rationale";
+        return;
+    }
     const choice = event.target.closest(".choice");
     if (!choice || !questionId || answerId) return;
     answer(choice.id);
@@ -139,7 +157,11 @@ async function next() {
         button.disabled = false;
         button.querySelector(".content").textContent = "";
         const rationale = button.querySelector(".rationale");
-        rationale.textContent = "";
+        const text = rationale.querySelector(".rationale-text");
+        const toggle = rationale.querySelector(".rationale-toggle");
+        text.textContent = "";
+        text.hidden = true;
+        toggle.textContent = "Show rationale";
         rationale.hidden = true;
     });
 
@@ -179,7 +201,9 @@ async function next() {
         if (!button) return;
         button.querySelector(".content").textContent = choice.content;
         const rationale = button.querySelector(".rationale");
-        if (rationale) rationale.textContent = choice.rationale || "";
+        if (rationale) {
+            rationale.querySelector(".rationale-text").textContent = choice.rationale || "";
+        }
     });
 
     // Restore state if returning to an unreviewed/answered question

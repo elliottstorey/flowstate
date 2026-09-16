@@ -299,3 +299,20 @@ mark.magenta {
         display: none;
     }
 }
+
+.rationale-toggle {
+    display: inline-block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--tx-3);
+    cursor: pointer;
+}
+
+.rationale-toggle:hover {
+    text-decoration: underline;
+}
+
+.rationale-text {
+    display: block;
+    margin-top: 0.25rem;
+}
