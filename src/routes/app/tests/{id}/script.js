@@ -46,7 +46,8 @@ function render() {
     const q = answer.question;
 
     // 1. Text Content
-    DOM.problemHeading.innerText = `Section ${section.position} — Question ${aIdx + 1} of ${section.answers.length}`;
+    const sectionNumber = section.position ?? section.number ?? sIdx + 1;
+    DOM.problemHeading.innerText = `Section ${sectionNumber} — Question ${aIdx + 1} of ${section.answers.length}`;
     DOM.stimulus.innerText = q.stimulus || "";
     DOM.stem.innerText = q.stem;
 
