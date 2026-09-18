@@ -21,6 +21,7 @@ const DOM = {
     chatInput: document.getElementById("chat-input"),
     messageCounter: document.getElementById("message-counter"),
     messagesLeft: document.getElementById("messages-left"),
+    highlight: document.getElementById("highlight")
 };
 
 let questionId = null;
@@ -82,6 +83,57 @@ function revealAnswer() {
 
     showNextButtonState();
 }
+
+// 1. Detect when the user finishes selecting text
+document.addEventListener('mouseup', (e) => {
+    // Get the current text selection
+    const selection = window.getSelection();
+    const selectedText = selection.toString().trim();
+
+    // If text is actually selected, show the button
+    if (selectedText.length > 0) {
+        DOM.highlight.hidden = false;
+        // Position the button slightly above the cursor
+        DOM.highlight.style.left = `${e.pageX}px`;
+        DOM.highlight.style.top = `${e.pageY - 10}px`;
+    } else {
+        // If no text is selected, hide the button
+        DOM.highlight.hidden = true;
+    }
+});
+
+// 2. Hide the button if the user clicks anywhere else on the page
+document.addEventListener('mousedown', (e) => {
+    // Check if the click target is NOT the button itself
+    if (e.target.id !== 'highlight') {
+        DOM.highlight.hidden = true;
+    }
+});
+
+// 3. Highlight the text when the button is clicked
+DOM.highlight.addEventListener('click', () => {
+    const selection = window.getSelection();
+
+    // Ensure there is a valid range selected
+    if (selection.rangeCount > 0) {
+        const range = selection.getRangeAt(0);
+
+        // Create a new span element with our highlight class
+        const span = document.createElement('span');
+        span.className = 'highlighted';
+
+        // Wrap the selected text in the span
+        try {
+            range.surroundContents(span);
+        } catch (error) {
+            console.log("Cannot highlight across multiple HTML elements.");
+        }
+
+        // Clean up: hide button and clear the selection highlight
+        DOM.highlight.hidden = true;
+        selection.removeAllRanges();
+    }
+});
 
 DOM.next.addEventListener("click", next);
 DOM.showAnswer.addEventListener("click", revealAnswer);
