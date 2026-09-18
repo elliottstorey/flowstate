@@ -75,8 +75,9 @@ function revealAnswer() {
 
         rationale.hidden = false;
 
-        // Correct answer and the user's own pick start expanded; everything else stays collapsed.
-        const shouldExpand = button.id === correctChoiceId || button.id === selectedChoiceId;
+        // ONLY the correct answer starts expanded; everything else stays collapsed.
+        const shouldExpand = button.id === correctChoiceId;
+
         text.hidden = !shouldExpand;
         toggle.textContent = shouldExpand ? "Hide rationale" : "Show rationale";
     });
