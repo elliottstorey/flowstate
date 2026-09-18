@@ -129,14 +129,44 @@ nav h2 {
     background-color: color-mix(in srgb, var(--re) 20%, var(--bg));
 }
 
+.choice .display {
+    display: flex;
+    gap: 0.75rem;
+}
+
 .choice .letter {
-    margin-right: 0.5rem;
     font-weight: bold;
     color: var(--tx-2);
 }
 
 .choice .rationale {
     color: var(--tx-2);
+}
+
+.choice .mask {
+    margin-left: auto;
+    cursor: pointer;
+    color: var(--tx-2);
+}
+
+.choice .mask {
+    opacity: 0;
+    cursor: pointer;
+}
+
+.choice:hover .mask,
+.choice.masked .mask {
+    opacity: 1;
+}
+
+.choice.masked .letter,
+.choice.masked .content {
+    text-decoration: line-through;
+    opacity: 0.4;
+}
+
+#choices.locked .mask {
+    display: none;
 }
 
 #chat {

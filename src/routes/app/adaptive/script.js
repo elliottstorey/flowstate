@@ -87,6 +87,15 @@ DOM.next.addEventListener("click", next);
 DOM.showAnswer.addEventListener("click", revealAnswer);
 
 DOM.choices.addEventListener("click", (event) => {
+    // 1. Mask toggle: must come first so it never counts as picking an answer
+    const mask = event.target.closest(".mask");
+    if (mask) {
+        event.stopPropagation();
+        if (answerId) return; // locked once answered
+        mask.closest(".choice").classList.toggle("masked");
+        return;
+    }
+
     const toggle = event.target.closest(".rationale-toggle");
     if (toggle) {
         event.stopPropagation();
@@ -97,8 +106,10 @@ DOM.choices.addEventListener("click", (event) => {
         toggle.textContent = isHidden ? "Hide rationale" : "Show rationale";
         return;
     }
+
     const choice = event.target.closest(".choice");
     if (!choice || !questionId || answerId) return;
+    if (choice.classList.contains("masked")) return; // can't pick a masked choice
     answer(choice.id);
 });
 
@@ -151,6 +162,7 @@ async function next() {
     DOM.chat.hidden = true;
     DOM.tabChat.hidden = true;
     DOM.messages.innerHTML = "";
+    DOM.choices.classList.remove("locked");
     hideBothButtons();
     DOM.choiceButtons.forEach((button) => {
         button.className = "choice";
@@ -253,6 +265,7 @@ async function answer(selectedChoice) {
     if (data.error) return alert(data.error);
 
     answerId = data.id;
+    DOM.choices.classList.add("locked");
     correctChoiceId = data.answer || correctChoiceId;
     selectedChoiceId = selectedChoice;
 
