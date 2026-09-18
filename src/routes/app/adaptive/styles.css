@@ -4,8 +4,10 @@ body {
     margin: 0;
 }
 
+/* BASE: Ensure desktop keeps 1:1.5:1 ratio */
 main {
-    flex: 4;
+    flex: 2.75;
+    /* 2.5 ratio here combined with chat's 1 keeps the overall 1:1.5:1 */
     display: flex;
     flex-direction: column;
     min-height: 0;
@@ -42,7 +44,9 @@ nav h2 {
 }
 
 #reference {
-    max-width: 25rem;
+    flex: 1;
+    max-width: 66ch;
+    /* Constrain max width as requested */
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -68,16 +72,17 @@ nav h2 {
 }
 
 #problem {
-    flex: 1;
+    flex: 1.5;
+    /* 1.5 ratio compared to the reference's 1 */
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    max-width: 75rem;
     width: 100%;
     margin-inline: auto;
     overflow-y: auto;
     min-height: 0;
     padding-right: 0.5rem;
+    max-width: 75rem;
 }
 
 /* MAGIC: Vertically centers the problem but allows scrolling without clipping */
@@ -184,6 +189,8 @@ nav h2 {
 
 #chat {
     flex: 1;
+    max-width: 66ch;
+    /* Constrain max width */
     display: flex;
     flex-direction: column;
     max-height: 100vh;
@@ -298,51 +305,6 @@ mark.magenta {
     --accent: var(--ma);
 }
 
-/* Mobile Layout */
-@media (max-width: 640px) {
-    #tabs:not([hidden]) {
-        display: flex;
-    }
-
-    body {
-        flex-direction: column;
-    }
-
-    main {
-        display: contents;
-    }
-
-    #question {
-        flex-direction: column;
-        margin: 0;
-        padding: 1rem;
-    }
-
-    #question.tab-off {
-        display: none;
-    }
-
-    #reference,
-    #problem {
-        max-width: none;
-        margin: 0;
-        flex: 1;
-    }
-
-    #chat {
-        max-width: none;
-        margin: 1rem;
-        /* Restored margin so it looks like a floating card again */
-        flex: 1;
-    }
-
-    #reference.tab-off,
-    #problem.tab-off,
-    #chat.tab-off {
-        display: none;
-    }
-}
-
 .rationale-toggle {
     display: inline-block;
     font-size: 0.875rem;
@@ -358,4 +320,115 @@ mark.magenta {
 .rationale-text {
     display: block;
     margin-top: 0.25rem;
+}
+
+/* TIER 1: Medium Screen - Passage and Question get tabbed (1400px) */
+@media (max-width: 1400px) {
+    main {
+        flex: 2;
+        /* Ratio shifts to exactly 2:1 (Main : Chat) */
+    }
+
+    /* MAGIC: Only show tabs if Reference is NOT hidden (meaning we have at least 2 tabs) */
+    #tabs:not([hidden]):has(button[data-tab="reference"]:not([hidden])) {
+        display: flex !important;
+    }
+
+    /* Hide tabs completely if Reference IS hidden (only Problem tab would be left) */
+    #tabs:not(:has(button[data-tab="reference"]:not([hidden]))) {
+        display: none !important;
+    }
+
+    button[data-tab="reference"]:not([hidden]) {
+        display: block !important;
+    }
+
+    /* Keep tutor tab explicitly hidden in this tier */
+    button[data-tab="chat"] {
+        display: none !important;
+    }
+
+    #reference {
+        max-width: 66ch;
+        margin-inline: auto;
+    }
+
+    /* Enforce tab hiding */
+    #reference[hidden],
+    #reference.tab-off,
+    #problem[hidden],
+    #problem.tab-off {
+        display: none !important;
+    }
+
+    /* ANTI-BLANK FALLBACK */
+    #question:not(:has(> div:not([hidden]):not(.tab-off)))>#problem {
+        display: flex !important;
+    }
+}
+
+/* TIER 2: Mobile Layout - All Tabbed (1000px) */
+@media (max-width: 1000px) {
+    body {
+        flex-direction: column;
+    }
+
+    main {
+        display: contents;
+    }
+
+    /* MAGIC: Show tabs if Reference OR Chat is NOT hidden (meaning >1 tab exists) */
+    #tabs:not([hidden]):has(button[data-tab="reference"]:not([hidden]), button[data-tab="chat"]:not([hidden])) {
+        display: flex !important;
+    }
+
+    /* Hide tabs completely if BOTH Reference and Chat are hidden */
+    #tabs:not(:has(button[data-tab="reference"]:not([hidden]), button[data-tab="chat"]:not([hidden]))) {
+        display: none !important;
+    }
+
+    /* Only show tutor tab if it's not explicitly hidden */
+    button[data-tab="chat"]:not([hidden]) {
+        display: block !important;
+    }
+
+    #question {
+        flex-direction: column;
+        margin: 0;
+        padding: 1rem;
+    }
+
+    #question[hidden],
+    #question.tab-off {
+        display: none !important;
+    }
+
+    #reference {
+        margin-inline: auto;
+        width: 100%;
+        flex: 1;
+    }
+
+    #problem {
+        margin: 0 auto;
+        flex: 1;
+        width: 100%;
+    }
+
+    /* CENTERED CHAT WITH MARGINS */
+    #chat {
+        margin: 1rem auto;
+        width: calc(100% - 2rem);
+        max-width: 66ch;
+        flex: 1;
+    }
+
+    #reference[hidden],
+    #reference.tab-off,
+    #problem[hidden],
+    #problem.tab-off,
+    #chat[hidden],
+    #chat.tab-off {
+        display: none !important;
+    }
 }
