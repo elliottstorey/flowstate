@@ -27,7 +27,7 @@ function getHeadKey(el) {
 	return Symbol();
 }
 
-export default class Server {
+async function sendResponse(res, response) { 	const headers = {}; 	response.headers.forEach((value, key) => { headers[key] = value; }); 	res.writeHead(response.status, headers); 	res.end(await response.text()); }  export default class Server {
 	constructor({
 		port = 80,
 		host = "0.0.0.0",
@@ -109,7 +109,7 @@ export default class Server {
 			context.params = route.params;
 
 			for (const feature of this.features) {
-				if (feature.server) Object.assign(context, await feature.server(context));
+				if (feature.server) { const serverResult = await feature.server(context); if (serverResult instanceof Response) { await sendResponse(res, serverResult); return; } if (serverResult) Object.assign(context, serverResult); }
 				if (res.headersSent) return;
 				if (feature.client) Object.assign(clientState, await feature.client(context));
 				if (res.headersSent) return;
@@ -119,7 +119,7 @@ export default class Server {
 				const result = await route.handler(context);
 				if (res.headersSent) return;
 
-				if (typeof result === "object" && result !== null) {
+				if (result instanceof Response) { await sendResponse(res, result); return; } if (typeof result === "object" && result !== null) {
 					res.writeHead(200, { "Content-Type": "application/json" });
 					res.end(JSON.stringify(result));
 				} else if (result !== undefined) {
