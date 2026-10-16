@@ -112,11 +112,11 @@ const routes = [
         method: "POST",
         pattern: new URLPattern({ pathname: "/payments/subscribe", baseURL: DUMMY_BASE }),
         handler: async ({ url, db, user, body }) => {
-            if (!user) return { status: 401, body: { error: "Unauthorized" } };
+            if (!user) return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401, headers: { "Content-Type": "application/json" } });
 
             const { product } = await body();
             const price = config.products[product]?.priceId;
-            if (!price) return { status: 400, body: { error: "Invalid product" } };
+            if (!price) return new Response(JSON.stringify({ error: "Invalid product" }), { status: 400, headers: { "Content-Type": "application/json" } });
 
             let [{ id: customerId } = {}] = await db`SELECT id FROM payments.customers WHERE user_id = ${user.id}`;
 
@@ -149,11 +149,11 @@ const routes = [
             try {
                 event = stripe.webhooks.constructEvent(rawBody, signature, process.env.STRIPE_WEBHOOK_SECRET);
             } catch (err) {
-                return { status: 400, body: `Webhook Error: ${err.message}` };
+                return new Response(`Webhook Error: ${err.message}`, { status: 400, headers: { "Content-Type": "text/plain" } });
             }
 
             const existing = await db`SELECT id FROM payments.webhook_events WHERE id = ${event.id}`;
-            if (existing.length) return { status: 200, body: "Already processed" };
+            if (existing.length) return new Response("Already processed", { status: 200, headers: { "Content-Type": "text/plain" } });
 
             await db`INSERT INTO payments.webhook_events (id, type) VALUES (${event.id}, ${event.type})`;
 
@@ -181,7 +181,7 @@ const routes = [
                 `;
             }
 
-            return { status: 200, body: "Processed" };
+            return new Response("Processed", { status: 200, headers: { "Content-Type": "text/plain" } });
         },
     },
 ];
