@@ -1,7 +1,7 @@
 {
-  "name": "framework",
+  "name": "flowstate",
   "version": "1.0.0",
-  "description": "A fullstack JS framework aiming to reduce boilerplate and keep code vanilla.",
+  "description": "Adaptive LSAT prep with a Socratic AI tutor and questions that adjust to your weaknesses.",
   "main": "framework.js",
   "type": "module",
   "private": true,
