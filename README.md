@@ -1,13 +1,51 @@
 # flowstate
 
-The fastest way to raise your LSAT score. A personalized approach to the LSAT where you learn by doing. Our adaptive platform targets your exact weaknesses, feeds you the perfect question at the perfect time, and walks you through mistakes with your own private tutor. Get a higher score in half the study time.
+Flowstate is adaptive LSAT prep. You learn by doing. The platform finds your exact weaknesses, feeds you questions at the right difficulty, and walks you through mistakes with a Socratic tutor that guides instead of giving answers.
+
+## How it works
+
+Adaptive questions. Every question is tagged by section, subtype, and difficulty. The app tracks your accuracy across each subtype and picks a target subtype and difficulty for your next question, so practice concentrates where you lose the most points. When it runs out of unseen questions at the right level, it generates a new one with an AI model and checks the generated question with a blind solve before showing it to you.
+
+Score prediction. Your predicted score comes from a rolling window of recent performance, weighted by difficulty, mapped onto the LSAT scale.
+
+Socratic tutor. When you miss a question, the tutor talks through your reasoning and nudges you toward the right answer without telling you what it is. It can unlock the next question once the conversation reaches a good stopping point.
 
 ## Getting started
 
-### Installation
+You need Node and Postgres.
+
+Install dependencies.
 
 `npm install`
 
-### Usage
+Set up a `.env` file with your database URL, Google OAuth credentials, Stripe key, and LLM provider key.
+
+Push the schema.
+
+`npm run db:push`
+
+Seed the database with sample questions.
+
+`npm run db:seed`
+
+Start the dev server.
 
 `npm run dev`
+
+## Project layout
+
+```
+src/
+  routes/    pages and API handlers
+  lib/       shared code, including the LSAT helpers
+  seed.js    database seeding
+.framework/  the routing, server, and database framework
+```
+
+## Stack
+
+Node with vanilla JavaScript, Postgres, the Vercel AI SDK for the tutor and question generation, and Stripe for subscriptions. No build step and no frontend framework.
+
+## Content
+
+The repo ships with sample questions only. It contains no licensed or third-party LSAT material.
