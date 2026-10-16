@@ -7,7 +7,7 @@
   "private": true,
   "scripts": {
     "db:push": "node --env-file-if-exists=.env .framework/db/push.js",
-    "db:seed": "node .framework/db/seed.js",
+    "db:seed": "node --env-file-if-exists=.env .framework/db/seed.js",
     "start": "node --env-file-if-exists=.env framework.js",
     "dev": "node --env-file-if-exists=.env framework.js"
   },
