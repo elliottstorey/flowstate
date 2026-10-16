@@ -6,7 +6,7 @@ export default {
         "/app/adaptive": async ({ payments }) => payments.features.questions || payments.subscribe("monthly"),
         "/app/tests": async ({ payments }) => payments.activeProducts.includes("monthly") || "/app",
         "/app/lessons": async ({ payments }) => payments.activeProducts.includes("monthly") || "/app",
-        "/api": ({ user }) => user,
+        "/api": ({ user }) => !!user,
         "/api/webhooks": true
     }
 }
