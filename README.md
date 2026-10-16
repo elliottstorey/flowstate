@@ -30,7 +30,7 @@ Seed the database with sample questions. Put your seed data in data/lsat_data.js
 
 Warning: if `data/lsat_data.json` and `data/lessons.json` are missing, seed logs `[SKIP]` and succeeds with zero questions, and the adaptive flow then errors on an empty question bank, so provide the seed files first.
 
-`db:seed` does NOT load `.env` automatically, so export `DATABASE_URL` first (or otherwise provide it in the environment) before running `npm run db:seed`:
+`db:seed` loads `.env` automatically via `--env-file-if-exists=.env`, so no manual export of `DATABASE_URL` is needed before running `npm run db:seed`:
 
 `export DATABASE_URL=...`
 
