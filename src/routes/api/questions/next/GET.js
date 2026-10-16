@@ -377,7 +377,7 @@ async function generateQuestion({ db, model, target }) {
 
 // ---------- handler ----------
 
-export default async function handler({ db, user, ai, payments }) { if (typeof payments?.features?.questions === "number" && payments.features.questions <= 0) { return new Response(JSON.stringify({ error: "Question quota exhausted" }), { status: 403, headers: { "Content-Type": "application/json" } }); }
+export default async function handler({ db, user, model }) {
     const target = await getTarget({ db, user });
     const { subtype, difficulty } = target;
 
@@ -395,13 +395,13 @@ export default async function handler({ db, user, ai, payments }) { if (typeof p
 
     // Nothing unseen for this target, so generate a fresh one
     if (!question) {
-        question = await generateQuestion({ db, model: ai.model, target }); if (!question) { return new Response(JSON.stringify({ error: "No questions are available. The database needs seeding." }), { status: 404, headers: { "Content-Type": "application/json" } }); }
-    }
+        question = await generateQuestion({ db, model``, target });
+}
 
-    return {
-        id: question.id,
-        type: question.type,
-        subtype: question.subtype,
-        difficulty: question.difficulty, questionsRemaining: payments?.features?.questions, messagesRemaining: payments?.features?.messages,
-    };
+return {
+    id: question.id,
+    type: question.type,
+    subtype: question.subtype,
+    difficulty: question.difficulty,
+};
 }
