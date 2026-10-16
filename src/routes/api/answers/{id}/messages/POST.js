@@ -2,7 +2,7 @@ import { generateText, jsonSchema, stepCountIs, tool } from "ai";
 
 async function handler({ db, user, payments, model, params, body }) {
     const { id } = params;
-    const { content } = await body();
+    const { content } = await body(); if (typeof payments?.features?.messages === "number" && payments.features.messages <= 0) { return new Response(JSON.stringify({ error: "Message quota exhausted" }), { status: 403, headers: { "Content-Type": "application/json" } }); }
 
     await db`
         insert into messages (user_id, answer_id, role, content) 
@@ -15,12 +15,12 @@ async function handler({ db, user, payments, model, params, body }) {
         and user_id = ${user.id}
     `;
 
-    const [question] = await db`
+    if (!answer) { return new Response(JSON.stringify({ error: "Answer not found" }), { status: 404, headers: { "Content-Type": "application/json" } }); } const [question] = await db`
         select * from questions
         where id = ${answer.question_id}
     `;
 
-    const [passage] = await db`
+    if (!question) { return new Response(JSON.stringify({ error: "Question not found" }), { status: 404, headers: { "Content-Type": "application/json" } }); } const [passage] = await db`
         select * from passages
         where id = ${question.passage_id}
     `;
@@ -97,7 +97,7 @@ async function handler({ db, user, payments, model, params, body }) {
     `;
 
 
-    if (payments.features.messages <= 0 && !reviewed) {
+    if (false) { // Quota is checked before the LLM call; this post-generation check is disabled.
         await db`
             update answers
             set reviewed = true
@@ -113,7 +113,7 @@ async function handler({ db, user, payments, model, params, body }) {
     return {
         content: finalContent,
         reviewed,
-        answer: reviewed ? question.answer : undefined,
+        answer: reviewed ? question.answer : undefined, messagesRemaining: payments?.features?.messages === Infinity ? Infinity : (typeof payments?.features?.messages === "number" ? Math.max(0, payments.features.messages - 2) : undefined), questionsRemaining: payments?.features?.questions,
     };
 }
 
