@@ -6,7 +6,7 @@ import * as authorization from "#framework/features/auth/authorization";
 import * as ai from "#framework/features/ai";
 
 const server = new Server({
-    port: 80,
+    port: Number(process.env.PORT) || 80,
     host: "0.0.0.0",
     features: [db, authentication, payments, authorization, ai],
 });
