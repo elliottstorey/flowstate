@@ -24,7 +24,7 @@ Push the schema.
 
 `npm run db:push`
 
-Seed the database with sample questions. Put your sample questions in data/questions.json first.
+Seed the database with sample questions. Put your seed data in data/lsat_data.json and data/lessons.json first.
 
 `npm run db:seed`
 
@@ -48,4 +48,4 @@ Node with vanilla JavaScript, Postgres, the Vercel AI SDK for the tutor and ques
 
 ## Content
 
-Sample questions live in data/questions.json. Seed data is local only and not tracked in the repo.
+Seed data lives in data/lsat_data.json and data/lessons.json. Seed data is local only and not tracked in the repo.
