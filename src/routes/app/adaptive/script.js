@@ -236,14 +236,17 @@ async function next() {
 
     // 2. Fetch full question state
     const dataRes = await fetch(`/api/questions/${meta.id}`);
-    if (!dataRes.ok) { const errorText = await dataRes.text(); let errorMessage = errorText; try { errorMessage = JSON.parse(errorText).error || errorText; } catch {} DOM.problemHeading.textContent = "Could not load question"; DOM.stem.textContent = errorMessage || "Could not load question"; showNextButtonState(); return; } const { passage, question, choices, answer: prevAnswer, messages } = await dataRes.json();
+    if (!dataRes.ok) { const errorText = await dataRes.text(); let errorMessage = errorText; try { errorMessage = JSON.parse(errorText).error || errorText; } catch {} DOM.problemHeading.textContent = "Could not load question"; DOM.stem.textContent = errorMessage || "Could not load question"; showNextButtonState(); return; } const { passage, question, choices, answer: prevAnswer, messages, correctChoice } = await dataRes.json();
 
     questionId = question.id;
     answerId = prevAnswer?.id || null;
-    correctChoiceId = null; // The GET response no longer discloses the answer; it comes from the answers/messages POST responses.
+    // The GET response discloses the correct choice only when this user
+    // has already answered this question (review); for an unanswered
+    // question it is null and no answer/rationale is exposed.
+    correctChoiceId = prevAnswer ? correctChoice || null : null;
     questionsCount++;
 
-    DOM.problemHeading.innerText = `Question ${questionsCount} • ${question.type} • ${meta.subtype} • Difficulty ${meta.difficulty}`;
+    DOM.problemHeading.innerText = `Question ${questionsCount} \u2022 ${question.type} \u2022 ${meta.subtype} \u2022 Difficulty ${meta.difficulty}`;
 
     const isRC = question.type === "Reading Comprehension";
     DOM.tabs.hidden = false;
@@ -322,6 +325,22 @@ async function answer(selectedChoice) {
     correctChoiceId = data.answer || correctChoiceId;
     selectedChoiceId = selectedChoice;
 
+    // The POST response carries the per-choice rationales now that the
+    // user has answered. Store them on the choice buttons so revealAnswer()
+    // (immediately for a correct answer, or via Show Answer for a wrong
+    // one) can display them without fetching anything for an unanswered
+    // question.
+    if (data.choices) {
+        data.choices.forEach((choice) => {
+            const button = document.getElementById(choice.letter);
+            if (!button) return;
+            const rationale = button.querySelector(".rationale");
+            if (rationale) {
+                rationale.querySelector(".rationale-text").textContent = choice.rationale || "";
+            }
+        });
+    }
+
     DOM.chat.hidden = false;
     DOM.tabChat.hidden = false;
 
@@ -345,7 +364,7 @@ async function chat(content) {
         if (!DOM.messages.querySelector(".cta")) {
             const btn = document.createElement("button");
             btn.className = "cta";
-            btn.textContent = "🔓 Upgrade now -->";
+            btn.textContent = "\uD83D\uDD13 Upgrade now -->";
             btn.style.margin = "auto";
             btn.onclick = () => $.subscribe('monthly');
             DOM.messages.appendChild(btn);
