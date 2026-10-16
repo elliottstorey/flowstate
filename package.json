@@ -18,7 +18,6 @@
     "#lib/*": "./src/lib/*/index.js"
   },
   "author": "",
-  "license": "ISC",
   "dependencies": {
     "@ai-sdk/anthropic": "^3.0.71",
     "@ai-sdk/deepseek": "^2.0.29",
