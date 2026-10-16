@@ -7,7 +7,7 @@ const compiledRules = Object.entries(config.authorize || {})
     .flatMap(([path, rule]) => {
         const norm = path.replace(/\{([^}]+)\}/g, ':$1');
         const baseScore = (norm.split('/').length * 10) + (norm.includes(':') ? 0 : 2);
-        const starPath = norm.endsWith('/') ? `${norm}* ` : `${norm}/*`;
+        const starPath = norm.endsWith('/') ? `${norm}*` : `${norm}/*`;
         return [
             { pattern: new URLPattern({ pathname: norm, baseURL: DUMMY_BASE }), rule, score: baseScore + 5 },
             { pattern: new URLPattern({ pathname: starPath, baseURL: DUMMY_BASE }), rule, score: baseScore }
