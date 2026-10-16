@@ -1,5 +1,5 @@
 import "urlpattern-polyfill";
-import fs from "node:fs/promises";
+import fsp from "node:fs/promises";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 
@@ -45,7 +45,7 @@ class Router {
     }
 
     async build() {
-        const files = await fs.readdir(this.dir, { recursive: true, withFileTypes: true });
+        const files = await fsp.readdir(this.dir, { recursive: true, withFileTypes: true });
 
         for (const file of files) {
             if (file.name == "layout.html") {

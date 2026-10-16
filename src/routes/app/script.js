@@ -122,11 +122,11 @@ async function tests() {
         }
 
         const date = new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric" }).format(new Date(test.created_at));
-        const message = isCompleted ? (test.tutor_message || "Test completed") : "In progress — resume where you left off";
+        const message = isCompleted ? (test.tutor_message || "Test completed") : "In progress... pick up where you left off";
 
         // Calculate the score delta (+25, -2, etc.) only if completed
         let deltaHtml = "";
-        let scoreHtml = `<p class="score">---</p>`;
+        let scoreHtml = `<p class="score"></p>`;
 
         if (isCompleted) {
             if (previousScore !== null && test.scaled_score) {

@@ -1,0 +1,358 @@
+<link rel="stylesheet" href="adaptive/styles.css">
+<script src="adaptive/script.js" type="module" defer></script>
+
+<button id="highlight" hidden>highlight</button>
+
+<div id="passage" hidden>
+    <p id="passage-heading">Passage</p>
+    <p id="passage-content"></p>
+</div>
+
+<div id="question">
+    <p id="question-heading"></p>
+    <p id="stimulus"></p>
+    <p id="stem"></p>
+    <div id="choices">
+        <button id="A" class="choice">
+            <p class="display">
+                <span class="letter">A</span>
+                <span class="content"></span>
+                <span class="mask">✕</span>
+            </p>
+            <p class="rationale" hidden>
+                <span class="rationale-toggle">Show rationale</span>
+                <span class="rationale-text" hidden></span>
+            </p>
+        </button>
+        <button id="B" class="choice">
+            <p class="display">
+                <span class="letter">B</span>
+                <span class="content"></span>
+                <span class="mask">✕</span>
+            </p>
+            <p class="rationale" hidden>
+                <span class="rationale-toggle">Show rationale</span>
+                <span class="rationale-text" hidden></span>
+            </p>
+        </button>
+        <button id="C" class="choice">
+            <p class="display">
+                <span class="letter">C</span>
+                <span class="content"></span>
+                <span class="mask">✕</span>
+            </p>
+            <p class="rationale" hidden>
+                <span class="rationale-toggle">Show rationale</span>
+                <span class="rationale-text" hidden></span>
+            </p>
+        </button>
+        <button id="D" class="choice">
+            <p class="display">
+                <span class="letter">D</span>
+                <span class="content"></span>
+                <span class="mask">✕</span>
+            </p>
+            <p class="rationale" hidden>
+                <span class="rationale-toggle">Show rationale</span>
+                <span class="rationale-text" hidden></span>
+            </p>
+        </button>
+        <button id="E" class="choice">
+            <p class="display">
+                <span class="letter">E</span>
+                <span class="content"></span>
+                <span class="mask">✕</span>
+            </p>
+            <p class="rationale" hidden>
+                <span class="rationale-toggle">Show rationale</span>
+                <span class="rationale-text" hidden></span>
+            </p>
+        </button>
+    </div>
+    <button id="show-answer" hidden>Show answer</button>
+    <button id="next" hidden>Next question --></button>
+</div>
+
+<style>
+    :host {
+        display: flex;
+        gap: 1rem;
+    }
+
+    p {
+        font-size: 1.063rem;
+        line-height: 1.6;
+        margin: 0;
+    }
+
+    #highlight {
+        position: absolute;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+        transform: translate(-50%, -100%);
+        background-color: var(--bg);
+    }
+
+    .highlighted {
+        border-radius: 2px;
+        background-color: var(--ye);
+    }
+
+    #passage {
+        flex: 1;
+        max-width: 66ch;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        min-height: 0;
+        border-radius: 0.5rem;
+        background-color: var(--bg-2);
+        padding: 1rem;
+
+        #passage-heading {
+            font-weight: bold;
+            color: var(--tx-2);
+            margin: 0;
+        }
+
+        #passage-content {
+            flex: 1;
+            white-space: pre-line;
+            overflow-y: auto;
+            min-height: 0;
+            margin: 0;
+        }
+    }
+
+    #question {
+        flex: 1.5;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        width: 100%;
+        margin-inline: auto;
+        overflow-y: auto;
+        min-height: 0;
+        padding-right: 0.5rem;
+        max-width: 75rem;
+
+        /* Vertically centers the problem but allows scrolling without clipping */
+        &::before,
+        &::after {
+            content: "";
+            margin: auto;
+        }
+
+        #question-heading {
+            color: var(--tx-2);
+            font-weight: 500;
+            font-size: 1rem !important;
+        }
+
+        #stem {
+            font-weight: 400;
+        }
+
+        #choices {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+
+            .choice {
+                text-align: start;
+                font-family: inherit;
+                display: flex;
+                flex-direction: column;
+                gap: 0.5rem;
+
+                &.correct,
+                &.correct:hover {
+                    border-color: var(--gr);
+                    background-color: color-mix(in srgb, var(--gr) 20%, var(--bg));
+                }
+
+                &.incorrect,
+                &.incorrect:hover {
+                    border-color: var(--re);
+                    background-color: color-mix(in srgb, var(--re) 20%, var(--bg));
+                }
+
+                .display {
+                    display: flex;
+                    gap: 0.75rem;
+                }
+
+                .letter {
+                    font-weight: bold;
+                    color: var(--tx-2);
+                }
+
+                .rationale {
+                    color: var(--tx-2);
+                }
+
+                .rationale-toggle {
+                    display: inline-block;
+                    font-size: 0.875rem;
+                    font-weight: 500;
+                    color: var(--tx-3);
+                    cursor: pointer;
+                }
+
+                .rationale-toggle:hover {
+                    text-decoration: underline;
+                }
+
+                .rationale-text {
+                    display: block;
+                    margin-top: 0.25rem;
+                }
+
+                .mask {
+                    margin-left: auto;
+                    cursor: pointer;
+                    color: var(--tx-2);
+                    opacity: 0;
+                    cursor: pointer;
+                }
+
+
+                &:hover .mask,
+                &.masked .mask {
+                    opacity: 1;
+                }
+
+                &.masked .letter,
+                &.masked .content {
+                    text-decoration: line-through;
+                    opacity: 0.4;
+                }
+            }
+
+            &.locked .mask {
+                display: none;
+            }
+        }
+    }
+</style>
+
+<script>
+    const DOM = {
+        highlight: root.getElementById("highlight"),
+        passage: root.getElementById("passage"),
+        passageContent: root.getElementById("passage-content"),
+        questionHeading: root.getElementById("question-heading"),
+        stimulus: root.getElementById("stimulus"),
+        stem: root.getElementById("stem"),
+        choices: root.getElementById("choices"),
+        showAnswer: root.getElementById("show-answer"),
+        next: root.getElementById("next"),
+    };
+    const choiceButtons = root.querySelectorAll(".choice");
+
+    // selected: letter picked | result: "correct" | "incorrect" (locks the choices)
+    // answer: letter of the revealed correct choice (shows rationales)
+    // masked / expanded: letters crossed out / rationale-open (expanded null = just the answer)
+    // next: label of the Next button (null hides it)
+    const defaults = {
+        heading: "", passage: "", stimulus: "", stem: "", choices: [],
+        selected: null, result: null, answer: null,
+        masked: [], expanded: null,
+        showAnswer: false, next: null,
+    };
+
+    const toggle = (list, item) => list.includes(item) ? list.filter((i) => i !== item) : [...list, item];
+    const emit = (name, detail) => host.dispatchEvent(new CustomEvent(name, { detail }));
+    const currentSelection = () => root.getSelection?.() ?? window.getSelection();
+
+    // Skips identical text so user highlights survive re-renders
+    const setText = (el, text) => {
+        if (el.textContent !== text) el.textContent = text;
+    };
+
+    // `view` is the host element: props are set directly on it (e.g. host.selected = "A")
+    state(defaults, (view) => {
+        const expanded = view.expanded ?? [view.answer];
+
+        setText(DOM.questionHeading, view.heading);
+        setText(DOM.passageContent, view.passage);
+        setText(DOM.stimulus, view.stimulus);
+        setText(DOM.stem, view.stem);
+        setText(DOM.next, view.next ?? "");
+        DOM.passage.hidden = !view.passage;
+        DOM.stimulus.hidden = !view.stimulus;
+        DOM.showAnswer.hidden = !view.showAnswer;
+        DOM.next.hidden = !view.next;
+        DOM.choices.classList.toggle("locked", !!view.result);
+
+        choiceButtons.forEach((button) => {
+            const choice = view.choices.find((c) => c.letter === button.id);
+            button.hidden = !choice;
+            if (!choice) return;
+
+            const status = choice.letter === view.selected ? (view.result ?? "selected")
+                : choice.letter === view.answer ? "correct"
+                    : "";
+            const masked = view.masked.includes(choice.letter) ? "masked" : "";
+            button.className = `choice ${status} ${masked}`;
+
+            const open = expanded.includes(choice.letter);
+            const rationaleText = button.querySelector(".rationale-text");
+            setText(button.querySelector(".content"), choice.content);
+            setText(rationaleText, choice.rationale ?? "");
+            rationaleText.hidden = !open;
+            button.querySelector(".rationale").hidden = !(view.answer && choice.rationale);
+            button.querySelector(".rationale-toggle").textContent = open ? "Hide rationale" : "Show rationale";
+        });
+    });
+
+    // Loads a new question: everything not passed goes back to its default
+    host.reset = (props) => Object.assign(host, defaults, props);
+
+    // --- Events -----------------------------------------------------------
+
+    DOM.choices.addEventListener("click", (event) => {
+        const letter = event.target.closest(".choice")?.id;
+        if (!letter) return;
+
+        if (event.target.closest(".mask")) {
+            if (!host.result) host.masked = toggle(host.masked, letter);
+        } else if (event.target.closest(".rationale-toggle")) {
+            host.expanded = toggle(host.expanded ?? [host.answer], letter);
+        } else if (!host.result && !host.masked.includes(letter)) {
+            emit("choose", letter);
+        }
+    });
+
+    DOM.showAnswer.onclick = () => emit("reveal");
+    DOM.next.onclick = () => emit("next");
+
+    // --- Highlighting -----------------------------------------------------
+
+    root.addEventListener("mouseup", (event) => {
+        if (event.target === DOM.highlight) return;
+        DOM.highlight.hidden = !currentSelection().toString().trim();
+        DOM.highlight.style.left = `${event.clientX}px`;
+        DOM.highlight.style.top = `${event.clientY - 10}px`;
+    });
+
+    root.addEventListener("mousedown", (event) => {
+        if (event.target !== DOM.highlight) DOM.highlight.hidden = true;
+    });
+
+    DOM.highlight.onclick = () => {
+        const selection = currentSelection();
+        if (selection.rangeCount) {
+            const span = document.createElement("span");
+            span.className = "highlighted";
+            try {
+                selection.getRangeAt(0).surroundContents(span);
+            } catch {
+                // selection spans multiple elements; can't wrap it
+            }
+        }
+        DOM.highlight.hidden = true;
+        selection.removeAllRanges();
+    };
+</script>
