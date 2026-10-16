@@ -1,73 +1,47 @@
 # framework
 
-A fullstack JS framework aiming to reduce boilerplate and keep code vanilla.
-
-### Routing
-
-
-
-## Directory Structure
-
-```
-src/
-    routes/ (dynamic routing)
-
-    layout.[html,css,js]
-
-    index.html (auto take care of html boilerplate)
-    style.css
-    script.js (pass in $request object)
-
-    METHOD.js server side api file (import db, auth from $framework, etc. export default handler w/ $request object passed in)
-
-    lib/
-
-    lib files can be imported from $lib
-
-    errors/
-
-    CODE.html
-
-    schemas/
-
-    auto postgres schemas (.sql files)
-```
+A small fullstack JS framework that keeps code vanilla. File-system routing, Postgres, and server handlers, with no build step.
 
 ## Routing
 
-Routing is file-system based and handled within the src/routes/ directory. The folder structure mirrors the URL path.
+Routing is file-system based. The folder structure under `src/routes/` mirrors the URL path.
 
-Static Routes: src/routes/about/index.html resolves to /about.
+Static route: `src/routes/about/index.html` resolves to `/about`.
 
-Dynamic Routes: (Implied usage based on standard conventions) Brackets or specific syntax in folder names handle dynamic parameters.
+Dynamic route: `src/routes/api/answers/{id}/messages/POST.js` resolves to `/api/answers/:id/messages` for POST requests, with the `id` segment available on the request object.
 
-## Frontend Development
+## Pages
 
-## Backend & API Development
+Each route folder can hold:
 
-## index.html
+- `index.html`, which gets its HTML boilerplate handled by the framework
+- `layout.html`, `layout.css`, and `layout.js` for shared page shell
+- `style.css` for route styles
+- `script.js` for client-side code, which receives a `$request` object
 
-All HTML boilerplate is taken care of.
+## API handlers
 
-## script.js
+A file named after an HTTP method, like `GET.js` or `POST.js`, is a server-side handler for that method on its route. Each handler exports a default function that receives a `$request` object with the route params, query string, and body.
 
-## METHOD.js
+## Framework libraries
 
-Export a server side handler function to be called during the specified HTTP METHOD.
+Handlers import shared libraries through the `#framework/*` alias.
 
-### $request
+- `sql`, a Postgres client for queries and schema work
+- `auth`, Google OAuth sign-in and session handling
 
-Passed in to the handler function is the $request object.
+App code lives under `src/` and is imported through `#config/*` and `#lib/*`.
 
-### framework libraries
+## Project layout
 
-Multiple libraries can be imported from framework and used.
+```
+src/
+  routes/    file-system routing, pages and API handlers
+  lib/       shared libraries, imported as #lib/*
+  schemas/   Postgres schemas as .sql files, applied by db:push
+  errors/    error pages as CODE.html
+```
 
-* sql
-* auth
+## Running
 
-Something the user knows: Passwords or PINs.
-
-Something the user has: A mobile device (for SMS codes, Authenticator apps, or push notifications) or a hardware security key.
-
-Something the user is: Biometrics like FaceID or fingerprint scanning.
+`framework.js` creates the server with `new Server({ port, host, features })`. Start it with `npm run dev`.
