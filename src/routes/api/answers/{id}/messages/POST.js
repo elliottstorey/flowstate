@@ -42,12 +42,12 @@ async function handler({ db, user, payments, model, params, body }) {
 
         QUESTION DATA:
         Type: ${question.type}
-        Passage: ${passage?.text || "N/A"}
+        Passage: ${passage?.content || "N/A"}
         Stimulus: ${question.stimulus || "N/A"}
         Stem: ${question.stem}
         
         Choices & Rationales:
-        ${choices.map(({ letter, text, rationale }) => `${letter}) ${text}\nRationale: ${rationale}`).join("\n\n")}
+        ${choices.map(({ letter, content, rationale }) => `${letter}) ${content}\nRationale: ${rationale}`).join("\n\n")}
         
         Correct Answer: ${question.answer}`;
 
