@@ -14,14 +14,32 @@ async function handler({ db, user, params }) {
     }
     const { passage_id: passageId, ...question } = row;
 
-    // 2. Get the choices: explicit columns only, no rationales.
-    const choices = await db`
-        select letter, content from choices
+    // 2. Get the user's answer (if any). Disclosure of the correct choice
+    // and rationales below is gated on this row existing: an unanswered
+    // question must never receive the answer or any rationale.
+    const [answer] = await db`
+        select id, selected_choice, reviewed from answers
         where question_id = ${id}
-        order by letter
+        and user_id = ${user.id}
     `;
 
-    // 3. Get the passage using the question's passage_id (content column).
+    // 3. Get the choices: include per-choice rationales only if answered.
+    let choices;
+    if (answer) {
+        choices = await db`
+            select letter, content, rationale from choices
+            where question_id = ${id}
+            order by letter
+        `;
+    } else {
+        choices = await db`
+            select letter, content from choices
+            where question_id = ${id}
+            order by letter
+        `;
+    }
+
+    // 4. Get the passage using the question's passage_id (content column).
     let passage = null;
     if (passageId) {
         const [passageRow] = await db`
@@ -31,21 +49,26 @@ async function handler({ db, user, params }) {
         passage = passageRow || null;
     }
 
-    // 4. Get the user's answer (if any)
-    const [answer] = await db`
-        select id, selected_choice, reviewed from answers
-        where question_id = ${id}
-        and user_id = ${user.id}
-    `;
+    // 5. Get the correct choice only if the user has already answered.
+    // The questions table has no question-level rationale column; the
+    // rationale lives per choice (choices.rationale, included above).
+    let correctChoice = null;
+    if (answer) {
+        const [answeredQuestion] = await db`
+            select answer from questions
+            where id = ${id}
+        `;
+        correctChoice = answeredQuestion?.answer ?? null;
+    }
 
-    // 5. Get the chat messages (only if they have an answer ID)
+    // 6. Get the chat messages (only if they have an answer ID)
     const messages = answer ? await db`
         select role, content from messages
         where answer_id = ${answer.id}
         order by created_at
     ` : [];
 
-    return { passage, question, choices, answer, messages };
+    return { passage, question, choices, answer, messages, correctChoice };
 }
 
 export default handler;
