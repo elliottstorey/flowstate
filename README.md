@@ -22,9 +22,17 @@ Set up a `.env` file with your database URL, Google OAuth credentials, Stripe ke
 
 Push the schema.
 
+`db:push` requires Docker running (Atlas dev-url `docker://postgres/15/dev`) and shells out to `npx @ariga/atlas`, which is NOT in `package.json` dependencies.
+
 `npm run db:push`
 
 Seed the database with sample questions. Put your seed data in data/lsat_data.json and data/lessons.json first.
+
+Warning: if `data/lsat_data.json` and `data/lessons.json` are missing, seed logs `[SKIP]` and succeeds with zero questions, and the adaptive flow then errors on an empty question bank, so provide the seed files first.
+
+`db:seed` does NOT load `.env` automatically, so export `DATABASE_URL` first (or otherwise provide it in the environment) before running `npm run db:seed`:
+
+`export DATABASE_URL=...`
 
 `npm run db:seed`
 
@@ -32,19 +40,27 @@ Start the dev server.
 
 `npm run dev`
 
+Note: the server listens on port 80 hardcoded in `framework.js`. There is no `PORT` env var, so it needs a privileged port and may conflict with other services using port 80.
+
 ## Project layout
 
 ```
 src/
-  routes/    pages and API handlers
-  lib/       shared code, including the LSAT helpers
-  seed.js    database seeding
-.framework/  the routing, server, and database framework
+  routes/       pages and API handlers
+  lib/          shared code, including the LSAT helpers
+  auth.js       authentication
+  payments.js   payments
+  schema.sql    database schema
+  components/   shared components
+  seed.js       database seeding
+.framework/     the routing, server, and database framework
 ```
 
 ## Stack
 
-Node with vanilla JavaScript, Postgres, the Vercel AI SDK for the tutor and question generation, and Stripe for subscriptions. No build step and no frontend framework.
+Node with vanilla JavaScript, Postgres, LLM access through the `ai` package via OpenRouter (`MODEL` env var + `OPENROUTER_API_KEY`) for the tutor and question generation, and Stripe for subscriptions. No build step and no frontend framework.
+
+The adaptive page loads `marked`, `canvas-confetti`, and `DOMPurify` from CDN (jsdelivr / esm.sh) at runtime, not from `package.json`.
 
 ## Content
 
