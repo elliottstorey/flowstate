@@ -1,5 +1,5 @@
-tools
-data
+tools/
+data/
 
 # Logs
 logs
