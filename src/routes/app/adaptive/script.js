@@ -205,7 +205,7 @@ function appendAssistantMessage(content) {
 async function next() {
     DOM.next.disabled = true;
 
-    $.features.questions--;
+    // Quota is server-authoritative: remaining counts come from server responses below.
     questionId = null;
     answerId = null;
     correctChoiceId = null;
@@ -232,15 +232,15 @@ async function next() {
 
     // 1. Get next question metadata (or resume unreviewed)
     const metaRes = await fetch(`/api/questions/next`);
-    const meta = await metaRes.json();
+    if (!metaRes.ok) { const errorText = await metaRes.text(); let errorMessage = errorText; try { errorMessage = JSON.parse(errorText).error || errorText; } catch {} DOM.problemHeading.textContent = "Could not load question"; DOM.stem.textContent = errorMessage || "Could not load question"; showNextButtonState(); return; } const meta = await metaRes.json(); if (typeof meta.questionsRemaining === "number") $.features.questions = meta.questionsRemaining; if (typeof meta.messagesRemaining === "number") { $.features.messages = meta.messagesRemaining; updateLimitsUI(); } if (!meta.id) { DOM.problemHeading.textContent = "Could not load question"; DOM.stem.textContent = "No question was returned."; showNextButtonState(); return; }
 
     // 2. Fetch full question state
     const dataRes = await fetch(`/api/questions/${meta.id}`);
-    const { passage, question, choices, answer: prevAnswer, messages } = await dataRes.json();
+    if (!dataRes.ok) { const errorText = await dataRes.text(); let errorMessage = errorText; try { errorMessage = JSON.parse(errorText).error || errorText; } catch {} DOM.problemHeading.textContent = "Could not load question"; DOM.stem.textContent = errorMessage || "Could not load question"; showNextButtonState(); return; } const { passage, question, choices, answer: prevAnswer, messages } = await dataRes.json();
 
     questionId = question.id;
     answerId = prevAnswer?.id || null;
-    correctChoiceId = question.answer;
+    correctChoiceId = null; // The GET response no longer discloses the answer; it comes from the answers/messages POST responses.
     questionsCount++;
 
     DOM.problemHeading.innerText = `Question ${questionsCount} • ${question.type} • ${meta.subtype} • Difficulty ${meta.difficulty}`;
@@ -278,7 +278,7 @@ async function next() {
         selectedChoiceId = oldChoice;
 
         if (oldButton) {
-            const isCorrect = oldChoice === question.answer || prevAnswer.reviewed;
+            const isCorrect = prevAnswer.reviewed;
             oldButton.classList.add(isCorrect ? "correct" : "incorrect");
 
             if (isCorrect) {
@@ -315,7 +315,7 @@ async function answer(selectedChoice) {
     });
 
     const data = await response.json();
-    if (data.error) return alert(data.error);
+    if (typeof data.questionsRemaining === "number") $.features.questions = data.questionsRemaining; if (typeof data.messagesRemaining === "number") { $.features.messages = data.messagesRemaining; updateLimitsUI(); } if (data.error) return alert(data.error);
 
     answerId = data.id;
     DOM.choices.classList.add("locked");
@@ -356,7 +356,7 @@ async function chat(content) {
         return;
     }
 
-    $.features.messages--;
+    // Quota is server-authoritative: remaining messages come from the server response below.
     updateLimitsUI();
     DOM.chatInput.disabled = true;
 
@@ -370,7 +370,7 @@ async function chat(content) {
     });
 
     const data = await response.json();
-    appendAssistantMessage(data.content);
+    if (typeof data.messagesRemaining === "number") { $.features.messages = data.messagesRemaining; updateLimitsUI(); } if (typeof data.questionsRemaining === "number") $.features.questions = data.questionsRemaining; if (data.error) { DOM.chatInput.disabled = false; DOM.chatInput.focus(); revealAnswer(); return; } appendAssistantMessage(data.content);
 
     if (data.reviewed && data.answer) {
         correctChoiceId = data.answer;
