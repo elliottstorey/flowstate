@@ -40,7 +40,7 @@ Start the dev server.
 
 `npm run dev`
 
-Note: the server listens on port 80 hardcoded in `framework.js`. There is no `PORT` env var, so it needs a privileged port and may conflict with other services using port 80.
+Note: the server listens on the `PORT` env var, defaulting to 80 in `framework.js`. The default port 80 needs a privileged port and may conflict with other services using port 80, so set `PORT` to use a different port.
 
 ## Project layout
 
