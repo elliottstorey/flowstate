@@ -24,7 +24,7 @@ Push the schema.
 
 `npm run db:push`
 
-Seed the database with sample questions.
+Seed the database with sample questions. Put your sample questions in data/questions.json first.
 
 `npm run db:seed`
 
@@ -48,4 +48,4 @@ Node with vanilla JavaScript, Postgres, the Vercel AI SDK for the tutor and ques
 
 ## Content
 
-The repo ships with sample questions only. It contains no licensed or third-party LSAT material.
+Sample questions live in data/questions.json. Seed data is local only and not tracked in the repo.
