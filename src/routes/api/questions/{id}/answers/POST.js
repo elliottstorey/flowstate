@@ -14,7 +14,7 @@ export default async function handler({ db, user, payments, params, body }) {
     }
 
     const choices = await db`
-        select letter from choices
+        select letter, rationale from choices
         where question_id = ${id}
     `;
     if (!choices.some((c) => c.letter === selectedChoice)) {
@@ -23,6 +23,9 @@ export default async function handler({ db, user, payments, params, body }) {
             headers: { "Content-Type": "application/json" }
         });
     }
+    // Per-choice rationales, disclosed only here because the caller is
+    // submitting (or has submitted) an answer for this question.
+    const choicesWithRationales = choices.map((c) => ({ letter: c.letter, rationale: c.rationale }));
 
     // Duplicate: return the existing result instead of inserting again.
     const [existing] = await db`
@@ -34,8 +37,10 @@ export default async function handler({ db, user, payments, params, body }) {
         const existingCorrect = existing.selected_choice == question.answer;
         return {
             id: existing.id,
-            answer: existing.reviewed ? question.answer : undefined,
+            // Already answered, so the correct choice and rationales do not leak an unanswered answer.
+            answer: question.answer,
             correct: existingCorrect,
+            choices: choicesWithRationales,
             questionsRemaining: payments?.features?.questions,
             messagesRemaining: payments?.features?.messages
         };
@@ -64,8 +69,10 @@ export default async function handler({ db, user, payments, params, body }) {
 
     return {
         id: answer.id,
-        answer: reviewed ? question.answer : undefined,
+        // Just answered, so return the correct choice and rationales for display after answering.
+        answer: question.answer,
         correct,
+        choices: choicesWithRationales,
         questionsRemaining,
         messagesRemaining: payments?.features?.messages
     };
